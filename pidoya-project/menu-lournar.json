@@ -1,0 +1,56 @@
+{
+  "restaurante": {
+    "nombre": "Lournar Coffee",
+    "direccion": "Calle Araucarias, Col Indeco Animas, Xalapa, Veracruz",
+    "cp": "91190"
+  },
+  "zonas_envio": [
+    {
+      "id": 1,
+      "nombre": "Centro (0-2 km)",
+      "costo": 50,
+      "codigos_postales": ["91190", "91191", "91192"]
+    },
+    {
+      "id": 2,
+      "nombre": "Zona Media (2-5 km)",
+      "costo": 70,
+      "codigos_postales": ["91193", "91194", "91195", "91196", "91197"]
+    },
+    {
+      "id": 3,
+      "nombre": "Zona Lejana (5+ km)",
+      "costo": 90,
+      "codigos_postales": ["91198", "91199", "91200", "91201", "91202"]
+    }
+  ],
+  "categorias": [
+    {
+      "id": "cafes",
+      "nombre": "☕ Cafés",
+      "items": [
+        {"id": "americano", "nombre": "Café Americano", "descripcion": "Espresso con agua caliente", "precio": 45},
+        {"id": "cappuccino", "nombre": "Cappuccino", "descripcion": "Espresso con leche vaporizada", "precio": 55},
+        {"id": "latte", "nombre": "Café Latte", "descripcion": "Espresso con leche tibia", "precio": 55},
+        {"id": "espresso", "nombre": "Espresso", "descripcion": "Café concentrado, puro", "precio": 35}
+      ]
+    },
+    {
+      "id": "bebidas",
+      "nombre": "🧊 Bebidas Frías",
+      "items": [
+        {"id": "iced_coffee", "nombre": "Iced Coffee", "descripcion": "Café espresso frío con hielo", "precio": 50},
+        {"id": "smoothie", "nombre": "Smoothie Fresa", "descripcion": "Batido natural con frutas", "precio": 60}
+      ]
+    },
+    {
+      "id": "alimentos",
+      "nombre": "🥐 Repostería",
+      "items": [
+        {"id": "croissant", "nombre": "Croissant Francés", "descripcion": "Hojaldre mantequilloso", "precio": 45},
+        {"id": "brownie", "nombre": "Brownie de Chocolate", "descripcion": "Chocolate belga derretido", "precio": 50},
+        {"id": "sandwich", "nombre": "Sándwich Jamón & Queso", "descripcion": "Pan tostado, jamón serrano", "precio": 85}
+      ]
+    }
+  ]
+}

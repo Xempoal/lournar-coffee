@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lournar Coffee - Carta</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Newsreader:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#605e5b",
+                        "botanical-olive": "#5C6B4F",
+                        "on-primary-fixed-variant": "#484743",
+                        "on-tertiary-fixed-variant": "#494648",
+                        "secondary-fixed-dim": "#ccc6bb",
+                        "shadow-lift": "rgba(44, 36, 24, 0.12)",
+                        "ink-primary": "#2C2418",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#c9c6c1",
+                        "on-primary-fixed": "#1c1c19",
+                        "outline": "#79776f",
+                        "on-tertiary-container": "#737072",
+                        "on-background": "#1c1b1b",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#fbf5f7",
+                        "inverse-on-surface": "#f4f0ef",
+                        "surface-container-highest": "#e5e2e0",
+                        "surface-variant": "#e5e2e0",
+                        "on-error-container": "#93000a",
+                        "accent-caramel": "#D4B896",
+                        "surface-bright": "#fdf8f7",
+                        "surface-container": "#f1edec",
+                        "on-secondary-container": "#68645b",
+                        "on-secondary-fixed": "#1e1b15",
+                        "tertiary-fixed": "#e7e1e3",
+                        "outline-variant": "#c9c6bd",
+                        "primary-fixed-dim": "#c9c6c1",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#4a463f",
+                        "on-surface-variant": "#484740",
+                        "on-error": "#ffffff",
+                        "primary-container": "#faf6f1",
+                        "on-surface": "#1c1b1b",
+                        "surface-container-low": "#f7f3f1",
+                        "surface-container-lowest": "#ffffff",
+                        "shadow-deep": "rgba(44, 36, 24, 0.18)",
+                        "accent-espresso": "#8B6F47",
+                        "on-secondary": "#ffffff",
+                        "ink-secondary": "#6B5D4F",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#72706d",
+                        "inverse-surface": "#313030",
+                        "tertiary-fixed-dim": "#cac5c7",
+                        "surface-dim": "#ddd9d8",
+                        "tertiary": "#615d5f",
+                        "shadow-soft": "rgba(44, 36, 24, 0.06)",
+                        "primary-fixed": "#e6e2dd",
+                        "surface": "#fdf8f7",
+                        "primary": "#605e5b",
+                        "secondary": "#625e55",
+                        "terracotta-red": "#B85C3D",
+                        "on-tertiary-fixed": "#1d1b1d",
+                        "secondary-fixed": "#e8e2d7",
+                        "surface-container-high": "#ebe7e6",
+                        "secondary-container": "#e8e2d7",
+                        "background": "#fdf8f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "40px",
+                        "container-padding": "24px",
+                        "gutter-compact": "8px",
+                        "item-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "body-base": ["Inter"],
+                        "micro-label": ["Inter"],
+                        "price-display": ["Newsreader"],
+                        "hero-lg": ["Newsreader"],
+                        "product-title": ["Newsreader"],
+                        "headline-md": ["Newsreader"]
+                    },
+                    "fontSize": {
+                        "body-base": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "micro-label": ["12px", { "letterSpacing": "0.08em", "fontWeight": "500" }],
+                        "price-display": ["22px", { "fontWeight": "500" }],
+                        "hero-lg": ["42px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "product-title": ["18px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "headline-md": ["28px", { "lineHeight": "1.2", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base antialiased min-h-screen flex flex-col selection:bg-accent-caramel/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-md border-b border-ink-primary/10 shadow-soft flex items-center justify-between px-container-padding h-16 transition-all">
+<button class="text-ink-primary dark:text-on-surface hover:bg-surface-container-low transition-colors active:scale-95 duration-200 p-2 -ml-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-ink-primary dark:text-surface-bright tracking-tight">Lournar Coffee</h1>
+<button class="text-ink-primary dark:text-on-surface hover:bg-surface-container-low transition-colors active:scale-95 duration-200 p-2 -mr-2 rounded-full flex items-center justify-center relative">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">shopping_bag</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-terracotta-red rounded-full"></span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-24 pb-32 flex flex-col">
+<!-- Filter Pills Bar -->
+<div class="px-container-padding pb-6 sticky top-16 bg-background/95 backdrop-blur-sm z-40">
+<div class="flex gap-3 overflow-x-auto hide-scrollbar pb-2 pt-2">
+<button class="h-10 px-5 rounded-full flex-shrink-0 flex items-center justify-center bg-ink-primary text-on-primary font-micro-label text-micro-label transition-transform active:scale-95">Todos</button>
+<button class="h-10 px-5 rounded-full flex-shrink-0 flex items-center justify-center bg-surface-container text-ink-primary font-micro-label text-micro-label hover:bg-surface-container-high transition-colors active:scale-95 border border-ink-primary/5">Café</button>
+<button class="h-10 px-5 rounded-full flex-shrink-0 flex items-center justify-center bg-surface-container text-ink-primary font-micro-label text-micro-label hover:bg-surface-container-high transition-colors active:scale-95 border border-ink-primary/5">Bebidas Frías</button>
+<button class="h-10 px-5 rounded-full flex-shrink-0 flex items-center justify-center bg-surface-container text-ink-primary font-micro-label text-micro-label hover:bg-surface-container-high transition-colors active:scale-95 border border-ink-primary/5">Desayuno</button>
+<button class="h-10 px-5 rounded-full flex-shrink-0 flex items-center justify-center bg-surface-container text-ink-primary font-micro-label text-micro-label hover:bg-surface-container-high transition-colors active:scale-95 border border-ink-primary/5">Almuerzo</button>
+</div>
+</div>
+<!-- Product List -->
+<div class="flex flex-col px-container-padding gap-0">
+<!-- Item: Cappuccino -->
+<article class="flex gap-item-gap py-6 border-b border-ink-primary/5 group hover:bg-surface-container-low/50 transition-colors -mx-4 px-4 rounded-xl">
+<img alt="" class="w-[100px] h-[100px] rounded-xl object-cover bg-surface-variant flex-shrink-0 shadow-soft" data-alt="A beautifully crafted cappuccino in a handmade ceramic cup, featuring delicate botanical latte art. The setting is a minimalist, warm-toned cafe table with soft, natural high-key lighting illuminating the creamy foam. The aesthetic is clean, artisanal, and sophisticated, utilizing a palette of rich espresso browns and warm ivory whites. The mood is calm and inviting, emphasizing a slow, premium cafe experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1LknOe7_lsd7zCESDxe7auOM3d57sp-4mq7W3IJE3yPKrVeO0Rfo2CDrPJkmOEfrYMbf-wEpyJuYkZpLpflYY6ZLGWLIlJBRfJQ7d9Pln-A-j0qnyr1T8YXm4nKqA1nFcj-3EFV4Q4Z2rVz2nA7jr4-90Ax6829OdULxAYBE-NPOR2JCXAYtEpv8XaAj6Mv3yyKhKWDn_grLZKoeixYLXAz4P3lqR9pT7Y056vu1H6KabJBTBe3zwnCBVTQuQU5J8an19K7bvQ5U"/>
+<div class="flex flex-col justify-center flex-1">
+<h3 class="font-product-title text-product-title text-ink-primary mb-1">Cappuccino</h3>
+<p class="font-body-base text-body-base text-ink-secondary/80 line-clamp-2 leading-snug mb-3">Espresso doble con leche texturizada y una capa sedosa de espuma.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-price-display text-ink-primary">$4.50</span>
+<button class="w-9 h-9 rounded-full bg-accent-espresso text-on-primary flex items-center justify-center shadow-soft hover:shadow-lift active:scale-90 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Item: Iced Latte -->
+<article class="flex gap-item-gap py-6 border-b border-ink-primary/5 group hover:bg-surface-container-low/50 transition-colors -mx-4 px-4 rounded-xl">
+<img alt="" class="w-[100px] h-[100px] rounded-xl object-cover bg-surface-variant flex-shrink-0 shadow-soft" data-alt="A tall, condensation-beaded glass of iced latte resting on a textured linen coaster. Swirls of rich espresso blend gracefully with creamy milk among large, clear ice cubes. The background is a soft, out-of-focus bright beige setting, emphasizing a warm minimalist style with high-key natural lighting. The overall feel is refreshing, artisanal, and perfectly aligned with a premium, light-mode editorial design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7IHd5oJNEUIngWSOQmm_TNf_jqYPR5x8RzEc0_h_-i4U2uU6kZUYtwOeeo41Mw5CsXKlT5-N7UKftVdIXG2aT91XGKUSGU3GmkNAQlvifxxtGKT3ivQ7qfwLQ7ljMK6vAx9Cp0pJtmvdu3-woZIWLY6YCL09n2JyXOucz05xDS4LuK-RQXOp07mgBbdb1WU8ZJYpRlNr34sw0dRjwrfwSimd-0kfoqSmCu3TSEu1pCATccoMs3rLf9Nw1q-OtgBkle2gwFvFKaSs"/>
+<div class="flex flex-col justify-center flex-1">
+<h3 class="font-product-title text-product-title text-ink-primary mb-1">Iced Latte</h3>
+<p class="font-body-base text-body-base text-ink-secondary/80 line-clamp-2 leading-snug mb-3">Refrescante mezcla de espresso de la casa, leche fría y hielo purificado.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-price-display text-ink-primary">$5.00</span>
+<button class="w-9 h-9 rounded-full bg-accent-espresso text-on-primary flex items-center justify-center shadow-soft hover:shadow-lift active:scale-90 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Item: Croissant -->
+<article class="flex gap-item-gap py-6 border-b border-ink-primary/5 group hover:bg-surface-container-low/50 transition-colors -mx-4 px-4 rounded-xl">
+<img alt="" class="w-[100px] h-[100px] rounded-xl object-cover bg-surface-variant flex-shrink-0 shadow-soft" data-alt="A freshly baked, golden-brown croissant with visible flaky layers resting on a simple, off-white ceramic plate. The scene is lit by soft, diffused daylight creating gentle shadows that highlight the artisanal texture of the pastry. The surrounding space is minimalist, featuring warm ivory tones and a hint of a natural wood table. The aesthetic conveys a sophisticated, slow-food bakery atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcyCTGfYRuexVvz28_3m6z8mgn0YHSarKs_g8w0zbTDL7kufwjvF9Eo7ytN3SS3qArMP2lUSx5vu2fun5A0BUutnEnkwghKWZqiG0ISsftNF1PjEoKRTN1BMhmXQ4V8h840z2Kavo1p5I4IhmNTHa1lS4t6z9qBaxZd5iPWLGAE3wI10jNvFfJv4jBPqw_0Gwmdmajoo_5kWQ87n7YgW4pKk7YW-bXhKzUZU3WMqOYXSV2hEF3KhqawryUBDPCSXg2WfRkeJqlmF8"/>
+<div class="flex flex-col justify-center flex-1">
+<h3 class="font-product-title text-product-title text-ink-primary mb-1">Croissant</h3>
+<p class="font-body-base text-body-base text-ink-secondary/80 line-clamp-2 leading-snug mb-3">Clásico francés de mantequilla, horneado fresco cada mañana con una textura hojaldrada perfecta.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-price-display text-ink-primary">$3.50</span>
+<button class="w-9 h-9 rounded-full bg-accent-espresso text-on-primary flex items-center justify-center shadow-soft hover:shadow-lift active:scale-90 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Item: Sándwich masa madre -->
+<article class="flex gap-item-gap py-6 border-b border-ink-primary/5 group hover:bg-surface-container-low/50 transition-colors -mx-4 px-4 rounded-xl">
+<img alt="" class="w-[100px] h-[100px] rounded-xl object-cover bg-surface-variant flex-shrink-0 shadow-soft" data-alt="A rustic sourdough sandwich sliced in half, revealing layers of fresh greens, cured meats, and artisanal cheese. The sandwich sits on a wooden cutting board against a bright, airy background. The lighting is crisp and natural, highlighting the crusty texture of the sourdough bread and the vibrant colors of the ingredients. The composition is clean, editorial, and celebrates high-quality, handcrafted food." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGMtc6q7gsNsdX9mgEXXGQW-D69hzOJfS2HLnlrnHgJe6TQhEPgf93cNQjQnlWswY8ZUIXQ9brHZUCN4Jdj4bixeYivAKUFCtZ8WyHNk9f4Wm1-f-aoZXYsNGOrNSXND8hhoJjeWFWwMC0ob8_dtRSmGrCFRGuFQjl8v_AhRLTJiMaqqVrPc6D4_cX4Zfc7ShzJH-9f1ojg_EVH8xuHs-vwALqzeANHenOUJzn_xbDKlArSgZgTEWtklirkvWEYaUTnFxlXB-qZlo"/>
+<div class="flex flex-col justify-center flex-1">
+<h3 class="font-product-title text-product-title text-ink-primary mb-1">Sándwich masa madre</h3>
+<p class="font-body-base text-body-base text-ink-secondary/80 line-clamp-2 leading-snug mb-3">Pan artesanal, jamón serrano, queso brie fundido, rúcula fresca y un toque de mostaza antigua.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-price-display text-ink-primary">$8.50</span>
+<button class="w-9 h-9 rounded-full bg-accent-espresso text-on-primary flex items-center justify-center shadow-soft hover:shadow-lift active:scale-90 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Item: Hamburguesa premium -->
+<article class="flex gap-item-gap py-6 border-b border-ink-primary/5 group hover:bg-surface-container-low/50 transition-colors -mx-4 px-4 rounded-xl">
+<img alt="" class="w-[100px] h-[100px] rounded-xl object-cover bg-surface-variant flex-shrink-0 shadow-soft" data-alt="A gourmet, artisanal burger presented on a clean, light beige slate. The burger features a perfectly toasted brioche bun, a thick juicy patty, melted aged cheddar, and crisp lettuce. The scene is flooded with soft, high-key studio lighting that eliminates harsh shadows, focusing entirely on the culinary details. The environment is minimalist, allowing the rich, warm tones of the food to stand out elegantly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcTq7q1B-5K1Krmp7MG4DtWblrFvzmG33wlmh43Fru6-5y3Ptco6KDi-Aizez8_qsIaYcD0hK6oSbPLBGLXXfFSJ9HpWbNJpZn7vOU33Ko6AXSJOGtIXoTQk-dRnX_uzwODIOJUYA6harFWy1qXo3-UhQ07eepGkDfP77GQxTD3sc1OWNXMEUKYEp2E4rXA4wccPOOgfXvSSv6C7LxGynO0pI7udCDqF0g-FqB32AjOEUQ-MMeG7qWwsVmesF-o-DgOz7JFjeqnXk"/>
+<div class="flex flex-col justify-center flex-1">
+<h3 class="font-product-title text-product-title text-ink-primary mb-1">Hamburguesa premium</h3>
+<p class="font-body-base text-body-base text-ink-secondary/80 line-clamp-2 leading-snug mb-3">Carne wagyu, pan brioche sellado en mantequilla, cebolla caramelizada y salsa secreta.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-price-display text-ink-primary">$12.00</span>
+<button class="w-9 h-9 rounded-full bg-accent-espresso text-on-primary flex items-center justify-center shadow-soft hover:shadow-lift active:scale-90 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Item: Bowl açaí -->
+<article class="flex gap-item-gap py-6 border-b border-ink-primary/5 group hover:bg-surface-container-low/50 transition-colors -mx-4 px-4 rounded-xl">
+<img alt="" class="w-[100px] h-[100px] rounded-xl object-cover bg-surface-variant flex-shrink-0 shadow-soft" data-alt="A beautifully arranged açaí bowl in a smooth, matte white ceramic dish. The deep purple base is perfectly topped with precise rows of sliced bananas, fresh berries, chia seeds, and artisanal granola. The setting is a minimalist, brightly lit cafe environment with soft ivory tones dominating the background. The lighting is pristine and shadowless, reflecting a healthy, premium, and carefully curated culinary experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLVBF6QuiMEr96D6b5rzkA47VTvhO66ZreE4ZdknxnGu27hpyhEOQCrlMWkhiWD_VMCH2nDtt5Dd7Mp5Ppm2HPsZ5l3J_7Tmkkx0eBvh26cW_uP5BMi5hBRf9VGTXv6Ps9wvO-PswJADH5aq_a6X1oDqg6V3hkeFQpiDgLn7iW_FXTl_46qshkjUAC4DHuzMKq2xWcuKHXpPvVUPCnvDmUF0IU28wcE0b3QZG4XTbTVrIkq4KyR1Us_nTZTc1JS-ItL_FkkXswmKg"/>
+<div class="flex flex-col justify-center flex-1">
+<h3 class="font-product-title text-product-title text-ink-primary mb-1">Bowl açaí</h3>
+<p class="font-body-base text-body-base text-ink-secondary/80 line-clamp-2 leading-snug mb-3">Base de açaí orgánico con plátano, fresas, granola artesanal y un chorrito de miel cruda.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-price-display text-ink-primary">$9.00</span>
+<button class="w-9 h-9 rounded-full bg-accent-espresso text-on-primary flex items-center justify-center shadow-soft hover:shadow-lift active:scale-90 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full pb-safe z-50 bg-surface/95 dark:bg-inverse-surface/95 backdrop-blur-lg border-t border-ink-primary/5 shadow-lift flex justify-around items-center h-20 px-container-padding transition-all md:hidden">
+<a class="flex flex-col items-center justify-center text-ink-secondary/60 dark:text-on-surface-variant hover:text-accent-espresso transition-all active:scale-90 duration-300 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-micro-label text-micro-label">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-accent-espresso font-semibold hover:text-accent-espresso transition-all active:scale-90 duration-300 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">coffee</span>
+<span class="font-micro-label text-micro-label">Carta</span>
+</a>
+<a class="flex flex-col items-center justify-center text-ink-secondary/60 dark:text-on-surface-variant hover:text-accent-espresso transition-all active:scale-90 duration-300 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
+<span class="font-micro-label text-micro-label">Pedidos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-ink-secondary/60 dark:text-on-surface-variant hover:text-accent-espresso transition-all active:scale-90 duration-300 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-micro-label text-micro-label">Perfil</span>
+</a>
+</nav>
+</body></html>

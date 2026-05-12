@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Detalle Producto - Lournar Coffee</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Newsreader:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#605e5b",
+                    "botanical-olive": "#5C6B4F",
+                    "on-primary-fixed-variant": "#484743",
+                    "on-tertiary-fixed-variant": "#494648",
+                    "secondary-fixed-dim": "#ccc6bb",
+                    "shadow-lift": "rgba(44, 36, 24, 0.12)",
+                    "ink-primary": "#2C2418",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#c9c6c1",
+                    "on-primary-fixed": "#1c1c19",
+                    "outline": "#79776f",
+                    "on-tertiary-container": "#737072",
+                    "on-background": "#1c1b1b",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#fbf5f7",
+                    "inverse-on-surface": "#f4f0ef",
+                    "surface-container-highest": "#e5e2e0",
+                    "surface-variant": "#e5e2e0",
+                    "on-error-container": "#93000a",
+                    "accent-caramel": "#D4B896",
+                    "surface-bright": "#fdf8f7",
+                    "surface-container": "#f1edec",
+                    "on-secondary-container": "#68645b",
+                    "on-secondary-fixed": "#1e1b15",
+                    "tertiary-fixed": "#e7e1e3",
+                    "outline-variant": "#c9c6bd",
+                    "primary-fixed-dim": "#c9c6c1",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#4a463f",
+                    "on-surface-variant": "#484740",
+                    "on-error": "#ffffff",
+                    "primary-container": "#faf6f1",
+                    "on-surface": "#1c1b1b",
+                    "surface-container-low": "#f7f3f1",
+                    "surface-container-lowest": "#ffffff",
+                    "shadow-deep": "rgba(44, 36, 24, 0.18)",
+                    "accent-espresso": "#8B6F47",
+                    "on-secondary": "#ffffff",
+                    "ink-secondary": "#6B5D4F",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#72706d",
+                    "inverse-surface": "#313030",
+                    "tertiary-fixed-dim": "#cac5c7",
+                    "surface-dim": "#ddd9d8",
+                    "tertiary": "#615d5f",
+                    "shadow-soft": "rgba(44, 36, 24, 0.06)",
+                    "primary-fixed": "#e6e2dd",
+                    "surface": "#fdf8f7",
+                    "primary": "#605e5b",
+                    "secondary": "#625e55",
+                    "terracotta-red": "#B85C3D",
+                    "on-tertiary-fixed": "#1d1b1d",
+                    "secondary-fixed": "#e8e2d7",
+                    "surface-container-high": "#ebe7e6",
+                    "secondary-container": "#e8e2d7",
+                    "background": "#fdf8f7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-gap": "40px",
+                    "container-padding": "24px",
+                    "gutter-compact": "8px",
+                    "item-gap": "16px"
+            },
+            "fontFamily": {
+                    "body-base": [
+                            "Inter"
+                    ],
+                    "micro-label": [
+                            "Inter"
+                    ],
+                    "price-display": [
+                            "Newsreader"
+                    ],
+                    "hero-lg": [
+                            "Newsreader"
+                    ],
+                    "product-title": [
+                            "Newsreader"
+                    ],
+                    "headline-md": [
+                            "Newsreader"
+                    ]
+            },
+            "fontSize": {
+                    "body-base": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "micro-label": [
+                            "12px",
+                            {
+                                    "letterSpacing": "0.08em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "price-display": [
+                            "22px",
+                            {
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "hero-lg": [
+                            "42px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "product-title": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-md": [
+                            "28px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "500"
+                            }
+                    ]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* Custom Checkbox SVG Animation */
+        .custom-checkbox input:checked + div svg path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 0;
+            animation: drawCheck 250ms ease-in-out forwards;
+        }
+        @keyframes drawCheck {
+            from { stroke-dashoffset: 100; }
+            to { stroke-dashoffset: 0; }
+        }
+        
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2C2418;
+            cursor: pointer;
+            margin-top: -8px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+            box-shadow: 0 2px 4px rgba(44, 36, 24, 0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e8e2d7;
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-tint/40 min-h-screen font-body-base text-body-base text-ink-primary antialiased relative">
+<!-- Background App View (Simulated underlying screen) -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-50 blur-sm scale-95 transition-transform origin-top">
+<div class="h-full w-full bg-surface">
+<!-- Simulated TopAppBar content -->
+<div class="h-16 w-full border-b border-ink-primary/10"></div>
+<div class="p-container-padding space-y-section-gap">
+<div class="h-40 bg-surface-container rounded-xl"></div>
+<div class="h-40 bg-surface-container rounded-xl"></div>
+<div class="h-40 bg-surface-container rounded-xl"></div>
+</div>
+</div>
+</div>
+<!-- Backdrop Blur Overlay -->
+<div class="fixed inset-0 z-10 bg-surface-tint/30 backdrop-blur-md"></div>
+<!-- Bottom Sheet Container (90vh) -->
+<main class="fixed inset-x-0 bottom-0 z-20 h-[795px] bg-surface rounded-t-3xl shadow-deep overflow-hidden flex flex-col transform transition-transform duration-300">
+<!-- Drag Handle -->
+<div class="w-full flex justify-center py-4 bg-transparent absolute top-0 z-30 pointer-events-none">
+<div class="w-12 h-1.5 bg-inverse-primary rounded-full"></div>
+</div>
+<!-- Close Button (Absolute Top Right) -->
+<button class="absolute top-4 right-4 z-30 w-10 h-10 flex items-center justify-center bg-surface-container/80 backdrop-blur-sm rounded-full text-ink-primary shadow-soft hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto no-scrollbar pb-32">
+<!-- Hero Image -->
+<div class="w-full h-[280px] relative bg-surface-container-low">
+<img alt="Café" class="w-full h-full object-cover" data-alt="A close-up, high-quality editorial shot of an artisanal cappuccino in a sleek, warm ivory ceramic cup, resting on a textured wooden table. The lighting is soft and natural, casting subtle ambient shadows that emphasize the creamy, perfect latte art on top. The background is a gently blurred, elegant cafe setting in warm minimalistic tones of cream, light taupe, and deep espresso ink. The overall mood is sophisticated, inviting, and handcrafted." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfesNWIlebG9Kbh7YeAwtpTGHC7klBW5_BspfiJWTZBODnijLwuUa5jV21DZqoFDYylnkJjnG5bvAbShxOI7nX7Tel5Tq9quQRX3ENDSlvBultjYY0OGHuki-Lg-1fTNa9vEyOQTawfK0lbNMhEvB62otAlO3zYTS8eSwMM8gsu1TuBHQ9C3qe-Y-qPn20a_OFXwU4euKjgdAb0qgRFZ_Tw_fdMXi5TSec6y_tSfitlOOYwr9gDSukGuF3slso-wKLLDvGuS7gtxc"/>
+</div>
+<div class="px-container-padding pt-6 pb-8">
+<!-- Header -->
+<div class="mb-section-gap">
+<h1 class="font-headline-md text-headline-md text-ink-primary mb-2">Latte de Vainilla Tostada</h1>
+<p class="font-body-base text-body-base text-ink-secondary">Espresso doble con leche texturizada, sirope artesanal de vainilla tostada y un toque de canela. Dulzor equilibrado y textura sedosa.</p>
+</div>
+<!-- Personalization Sections -->
+<div class="space-y-section-gap">
+<!-- Tamaño -->
+<section>
+<h2 class="font-micro-label text-micro-label text-ink-secondary uppercase mb-item-gap flex justify-between items-center">
+<span>Tamaño</span>
+<span class="text-error lowercase font-normal">*Obligatorio</span>
+</h2>
+<div class="flex flex-col gap-3">
+<!-- Chico -->
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-5 h-5 rounded-full border border-ink-primary flex items-center justify-center relative">
+<input checked="" class="opacity-0 absolute inset-0 cursor-pointer peer" name="size" type="radio"/>
+<div class="w-2.5 h-2.5 bg-ink-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Chico (8 oz)</span>
+</div>
+</label>
+<!-- Mediano -->
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-5 h-5 rounded-full border border-ink-primary flex items-center justify-center relative">
+<input class="opacity-0 absolute inset-0 cursor-pointer peer" name="size" type="radio"/>
+<div class="w-2.5 h-2.5 bg-ink-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Mediano (12 oz)</span>
+</div>
+<span class="font-body-base text-body-base text-ink-secondary">+$15</span>
+</label>
+<!-- Grande -->
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-5 h-5 rounded-full border border-ink-primary flex items-center justify-center relative">
+<input class="opacity-0 absolute inset-0 cursor-pointer peer" name="size" type="radio"/>
+<div class="w-2.5 h-2.5 bg-ink-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Grande (16 oz)</span>
+</div>
+<span class="font-body-base text-body-base text-ink-secondary">+$25</span>
+</label>
+</div>
+</section>
+<!-- Tipo de Leche -->
+<section>
+<h2 class="font-micro-label text-micro-label text-ink-secondary uppercase mb-item-gap">Tipo de Leche</h2>
+<div class="flex flex-col gap-3">
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-5 h-5 rounded-full border border-ink-primary flex items-center justify-center relative">
+<input checked="" class="opacity-0 absolute inset-0 cursor-pointer peer" name="milk" type="radio"/>
+<div class="w-2.5 h-2.5 bg-ink-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Entera</span>
+</div>
+</label>
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-5 h-5 rounded-full border border-ink-primary flex items-center justify-center relative">
+<input class="opacity-0 absolute inset-0 cursor-pointer peer" name="milk" type="radio"/>
+<div class="w-2.5 h-2.5 bg-ink-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Deslactosada</span>
+</div>
+</label>
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-5 h-5 rounded-full border border-ink-primary flex items-center justify-center relative">
+<input class="opacity-0 absolute inset-0 cursor-pointer peer" name="milk" type="radio"/>
+<div class="w-2.5 h-2.5 bg-ink-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Almendras</span>
+</div>
+<span class="font-body-base text-body-base text-ink-secondary">+$12</span>
+</label>
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-5 h-5 rounded-full border border-ink-primary flex items-center justify-center relative">
+<input class="opacity-0 absolute inset-0 cursor-pointer peer" name="milk" type="radio"/>
+<div class="w-2.5 h-2.5 bg-ink-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Avena</span>
+</div>
+<span class="font-body-base text-body-base text-ink-secondary">+$15</span>
+</label>
+</div>
+</section>
+<!-- Extras -->
+<section>
+<h2 class="font-micro-label text-micro-label text-ink-secondary uppercase mb-item-gap">Extras</h2>
+<div class="flex flex-col gap-3">
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors custom-checkbox">
+<div class="flex items-center gap-4">
+<div class="relative w-5 h-5">
+<input class="opacity-0 absolute inset-0 z-10 cursor-pointer" type="checkbox"/>
+<div class="absolute inset-0 border border-ink-primary rounded bg-surface flex items-center justify-center">
+<svg class="text-ink-primary" fill="none" height="10" viewbox="0 0 12 10" width="12">
+<path d="M1.5 5L4.5 8L10.5 2" stroke="currentColor" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Shot Extra de Espresso</span>
+</div>
+<span class="font-body-base text-body-base text-ink-secondary">+$18</span>
+</label>
+<label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 cursor-pointer hover:bg-surface-container transition-colors custom-checkbox">
+<div class="flex items-center gap-4">
+<div class="relative w-5 h-5">
+<input class="opacity-0 absolute inset-0 z-10 cursor-pointer" type="checkbox"/>
+<div class="absolute inset-0 border border-ink-primary rounded bg-surface flex items-center justify-center">
+<svg class="text-ink-primary" fill="none" height="10" viewbox="0 0 12 10" width="12">
+<path d="M1.5 5L4.5 8L10.5 2" stroke="currentColor" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<span class="font-body-base text-body-base text-ink-primary">Crema Batida</span>
+</div>
+<span class="font-body-base text-body-base text-ink-secondary">+$10</span>
+</label>
+</div>
+</section>
+<!-- Nivel de Azúcar (Slider) -->
+<section>
+<h2 class="font-micro-label text-micro-label text-ink-secondary uppercase mb-item-gap flex justify-between">
+<span>Nivel de Azúcar</span>
+<span class="text-ink-primary">Normal</span>
+</h2>
+<div class="py-4 px-2">
+<input class="w-full" max="100" min="0" type="range" value="50"/>
+<div class="flex justify-between mt-2 font-micro-label text-micro-label text-ink-secondary">
+<span>Sin azúcar</span>
+<span>Doble</span>
+</div>
+</div>
+</section>
+<!-- Notas Especiales -->
+<section>
+<h2 class="font-micro-label text-micro-label text-ink-secondary uppercase mb-item-gap">Notas Especiales</h2>
+<textarea class="w-full bg-surface border-b border-ink-primary/20 p-3 font-body-base text-body-base text-ink-primary placeholder:text-ink-secondary/50 focus:outline-none focus:border-ink-primary transition-colors resize-none" placeholder="Ej. Muy caliente, en vaso térmico..." rows="3"></textarea>
+</section>
+</div>
+</div>
+</div>
+<!-- Fixed Bottom Action Bar -->
+<div class="absolute bottom-0 left-0 w-full bg-surface/95 backdrop-blur-lg border-t border-ink-primary/5 px-container-padding pb-safe pt-4 flex items-center justify-between gap-4 z-40">
+<!-- Stepper -->
+<div class="flex items-center gap-4 bg-surface-container rounded-full p-1 border border-outline-variant/30">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-ink-primary hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="font-headline-md text-product-title text-ink-primary w-4 text-center">1</span>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-ink-primary hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<!-- Add to Cart Button -->
+<button class="flex-1 h-14 bg-ink-primary text-on-primary rounded-full font-body-base text-body-base font-medium flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-soft">
+<span>Agregar al pedido</span>
+<span class="opacity-50">·</span>
+<span>$85.00</span>
+</button>
+</div>
+</main>
+</body></html>
