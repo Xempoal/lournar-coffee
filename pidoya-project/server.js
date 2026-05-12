@@ -44,9 +44,10 @@ const guardarDB = () => {
 };
 
 app.get('/api/menu/:restaurante_id', (req, res) => {
+  const rest = { ...database.restaurantes[0], telefono: menu.restaurante.telefono };
   res.json({
     success: true,
-    restaurante: database.restaurantes[0],
+    restaurante: rest,
     menu: menu,
     zonas_envio: menu.zonas_envio
   });
@@ -89,7 +90,7 @@ app.post('/api/crear-pedido', (req, res) => {
     costo_envio: costo_envio || 0,
     total: total,
     metodo_pago: metodo_pago,
-    estado: 'confirmado',
+    estado: 'preparando',
     restaurante_id: 'lournar-1'
   };
 

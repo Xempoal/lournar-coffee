@@ -2,7 +2,8 @@
   "restaurante": {
     "nombre": "Lournar Coffee",
     "direccion": "Calle Araucarias, Col Indeco Animas, Xalapa, Veracruz",
-    "cp": "91190"
+    "cp": "91190",
+    "telefono": "5212281234567"
   },
   "zonas_envio": [
     {

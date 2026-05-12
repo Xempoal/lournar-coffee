@@ -174,8 +174,7 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 
 /* ── STATUS SELECTOR ── */
 .ssel-lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
-.ssel{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:10px}
-@media(max-width:400px){.ssel{grid-template-columns:repeat(3,1fr)}}
+.ssel{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
 .sopt{padding:9px 4px;border-radius:10px;border:1.5px solid var(--out);background:var(--surf-low);cursor:pointer;text-align:center;font-size:10px;font-weight:500;color:var(--ink2);transition:border-color 200ms,background 200ms,color 200ms,transform 150ms;display:flex;flex-direction:column;align-items:center;gap:3px}
 .sopt .sico{font-size:17px;line-height:1}
 .sopt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -216,7 +215,7 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
     </div>
     <div class="m-body" id="m-body"></div>
     <div class="m-foot">
-      <div class="ssel-lbl">Cambiar estado — toca para aplicar</div>
+      <div class="ssel-lbl" id="ssel-lbl">Cambiar estado — toca para aplicar</div>
       <div class="ssel" id="ssel"></div>
     </div>
   </div>
@@ -441,7 +440,7 @@ function openDetail(id){
   document.getElementById('m-oid').textContent   = p.numero_corto || ('#'+p.id.substring(0,8).toUpperCase());
   document.getElementById('m-cname').textContent = p.cliente.nombre;
   document.getElementById('m-body').innerHTML = buildBody(p);
-  buildSsel(p.estado);
+  buildSsel(p);
   document.getElementById('ov').classList.add('on');
   document.getElementById('modal').classList.add('open');
 }
@@ -506,9 +505,16 @@ function buildTL(estado, isD){
   }).join('');
 }
 
-function buildSsel(cur){
+function buildSsel(p){
+  const cur = p.estado;
   selSt = cur;
-  const opts = ['confirmado','preparando','listo','enviando','entregado'];
+  const isD = isDelivery(p);
+  const opts = isD
+    ? ['preparando','listo','enviando','entregado']
+    : ['preparando','listo'];
+  const curM = SM[cur]||{emoji:'?',label:cur};
+  const lbl = document.getElementById('ssel-lbl');
+  if(lbl) lbl.textContent = 'Estado actual: '+curM.emoji+' '+curM.label+' — toca para cambiar';
   document.getElementById('ssel').innerHTML = opts.map(s=>{
     const m = SM[s];
     return '<div class="sopt'+(s===cur?' on':'')+'" data-s="'+s+'" onclick="selStatus(\''+s+'\')">'
@@ -531,11 +537,13 @@ async function selStatus(s){
     actOrd.estado = s;
     showToast(SM[s].emoji+' '+SM[s].label);
     document.getElementById('m-body').innerHTML = buildBody(actOrd);
+    buildSsel(actOrd);
     updateStats(); renderOrders(null);
   } else {
     // Revert on error
     selSt = prev;
-    document.querySelectorAll('.sopt').forEach(el=>el.classList.toggle('on', el.dataset.s===prev));
+    actOrd.estado = prev;
+    buildSsel(actOrd);
     showToast('Error al actualizar');
   }
 }

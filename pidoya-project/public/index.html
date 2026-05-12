@@ -844,7 +844,8 @@ function renderConf(p){
   st.carrito=[];updBadge();
 }
 function finalizar(){
-  window.location.href='https://wa.me/5212280000000?text='+encodeURIComponent('Hola, acabo de realizar mi pedido en Lournar Coffee');
+  const tel=((window._menu&&window._menu.restaurante&&window._menu.restaurante.telefono)||'5212281234567').replace(/\D/g,'');
+  window.location.href='https://wa.me/'+tel+'?text='+encodeURIComponent('Hola, acabo de realizar mi pedido en Lournar Coffee');
 }
 function volverInicio(){
   st.carrito=[];st.cli={nombre:'',tel:'',dir:'',cp:''};st.envio=0;st.pago='efectivo';
