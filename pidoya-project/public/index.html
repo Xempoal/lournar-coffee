@@ -75,7 +75,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .inicio-footer{display:flex;align-items:center;justify-content:center;gap:4px;color:rgba(107,93,79,.55);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
 
 /* ═══════════════ SCREEN 2: MENÚ ═══════════════ */
-.pills-wrap{position:sticky;top:60px;z-index:90;background:rgba(250,246,241,.96);backdrop-filter:blur(8px);padding:10px 0;border-bottom:1px solid var(--out)}
+.pills-wrap{background:rgba(250,246,241,.96);backdrop-filter:blur(8px);padding:10px 0;border-bottom:1px solid var(--out)}
 .pills{display:flex;gap:8px;overflow-x:auto;padding:2px var(--pad)}
 .pill{flex-shrink:0;height:36px;padding:0 16px;border-radius:999px;border:1px solid var(--out);background:var(--surf-c);color:var(--ink);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 250ms cubic-bezier(.4,0,.2,1),color 250ms,border-color 250ms}
 .pill.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -194,7 +194,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .tot-total{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--ink);padding-top:8px;border-top:1px solid var(--out);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
 
 /* ═══════════════ SCREEN 5: CONFIRMACIÓN ═══════════════ */
-.conf-wrap{padding:var(--pad);padding-top:60px;padding-bottom:130px;display:flex;flex-direction:column;gap:var(--gap)}
+.conf-wrap{padding:var(--pad);padding-top:60px;padding-bottom:0;display:flex;flex-direction:column;gap:var(--gap)}
 .conf-hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
 .conf-circle{width:88px;height:88px;border-radius:50%;background:var(--cara);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(212,184,150,.4)}
 .conf-circle svg path{stroke-dasharray:50;stroke-dashoffset:50;animation:drawChk 600ms ease 300ms forwards}
@@ -224,7 +224,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .tl-title.pend,.tl-desc.pend{opacity:.45}
 .tl-desc{font-size:13px;color:var(--ink2)}
 .barista-note{background:var(--surf-c);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--ink2);border-left:3px solid var(--cara);font-style:italic;line-height:1.6}
-.conf-bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(253,248,247,.97);backdrop-filter:blur(12px);border-top:1px solid var(--out);padding:14px 24px env(safe-area-inset-bottom,14px);z-index:100;display:flex;flex-direction:column;gap:10px}
+.conf-bottom{padding:20px 0 40px;border-top:1px solid var(--out);margin-top:8px;display:flex;flex-direction:column;gap:10px}
 
 /* ── CANVAS CONFETTI ── */
 #confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:400;display:none}
@@ -385,17 +385,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
 
     <div class="co-sec-lbl">Método de pago</div>
-    <div class="pay-cards">
-      <div class="pay-card on" id="pc-efectivo" onclick="selPay('efectivo')">
-        <span class="msym">payments</span><div class="pay-lbl">Efectivo</div>
-      </div>
-      <div class="pay-card" id="pc-tarjeta" onclick="selPay('tarjeta')">
-        <span class="msym">credit_card</span><div class="pay-lbl">Tarjeta</div>
-      </div>
-      <div class="pay-card" id="pc-transferencia" onclick="selPay('transferencia')">
-        <span class="msym">account_balance</span><div class="pay-lbl">Transf.</div>
-      </div>
-    </div>
+    <div class="pay-cards" id="pay-cards"></div>
     <div class="xfer" id="xfer-box">
       <div class="xrow">
         <div><div class="xlbl">Banco</div><div class="xval">BBVA</div></div>
@@ -470,12 +460,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </div>
     </div>
     <div class="barista-note">P.D. Hoy preparamos pan recién horneado. ¡Pregunta por la pieza del día!</div>
-  </div>
-  <div class="conf-bottom">
-    <button class="btn btn-dark" onclick="volverInicio()">Volver al inicio</button>
-    <button class="btn btn-ghost" id="wa-btn" onclick="compartir()">
-      <span class="msym" style="font-size:18px">share</span> Compartir por WhatsApp
-    </button>
+    <div class="conf-bottom">
+      <button class="btn btn-dark" onclick="finalizar()">Finalizar</button>
+      <button class="btn btn-ghost" style="height:44px;font-size:13px" onclick="volverInicio()">Hacer otro pedido</button>
+    </div>
   </div>
 </div>
 
@@ -774,6 +762,18 @@ function setDel(type){
   const erow=document.getElementById('envio-row');if(erow)erow.style.display=type==='envio'?'flex':'none';
   if(type==='recoger'){st.envio=0;st.cli.cp='';const ip=document.getElementById('i-cp');if(ip)ip.value='';document.getElementById('ship-tag').classList.remove('on')}
   updTotals();
+  renderPayOptions();
+}
+function renderPayOptions(){
+  const isRec=st.del==='recoger';
+  const opts=isRec
+    ?[{id:'sucursal',ico:'store',lbl:'En sucursal'},{id:'transferencia',ico:'account_balance',lbl:'Transf.'}]
+    :[{id:'efectivo',ico:'payments',lbl:'Efectivo'},{id:'tarjeta',ico:'credit_card',lbl:'Tarjeta'},{id:'transferencia',ico:'account_balance',lbl:'Transf.'}];
+  if(!opts.find(o=>o.id===st.pago))st.pago=opts[0].id;
+  const el=document.getElementById('pay-cards');if(!el)return;
+  el.innerHTML=opts.map(o=>'<div class="pay-card'+(o.id===st.pago?' on':'')+'" id="pc-'+o.id+'" onclick="selPay(\''+o.id+'\')">'
+    +'<span class="msym">'+o.ico+'</span><div class="pay-lbl">'+o.lbl+'</div></div>').join('');
+  document.getElementById('xfer-box').classList.toggle('on',st.pago==='transferencia');
 }
 function ffFocus(inp){const f=inp.closest('.ff');if(f)f.classList.add('foc')}
 function ffBlur(inp){const f=inp.closest('.ff');if(f){f.classList.remove('foc');f.classList.toggle('fil',!!inp.value)}}
@@ -801,7 +801,7 @@ function updTotals(){
 function selPay(m){
   st.pago=m;
   document.querySelectorAll('.pay-card').forEach(c=>c.classList.remove('on'));
-  document.getElementById('pc-'+m).classList.add('on');
+  const el=document.getElementById('pc-'+m);if(el)el.classList.add('on');
   document.getElementById('xfer-box').classList.toggle('on',m==='transferencia');
 }
 function confirmar(){
@@ -835,20 +835,16 @@ function confirmar(){
 
 /* ── CONFIRMATION ── */
 function renderConf(p){
-  const yr=new Date().getFullYear();
-  const num='L-'+yr+'-'+String(Math.floor(Math.random()*8999)+1000);
+  const num=p.numero_corto||('L'+String(Math.floor(Math.random()*9000)+1000));
   document.getElementById('c-ord').textContent=num;
   document.getElementById('c-time').textContent='12–15 min';
   const el=document.getElementById('c-items');
   const rows=st.carrito.map(i=>'<div style="display:flex;justify-content:space-between"><span>'+i.qty+'× '+esc(i.name)+(i.mods.length?' ('+i.mods.slice(0,2).join(', ')+')':'')+'</span><span>$'+(i.price*i.qty)+'</span></div>').join('');
   el.innerHTML=rows+'<div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--out);margin-top:4px;font-weight:500;color:var(--ink)"><span>Total</span><span>$'+p.total+'</span></div>';
-  const txt=st.carrito.map(i=>i.qty+'x '+i.name+' ($'+(i.price*i.qty)+')').join('\n');
-  document.getElementById('wa-btn').dataset.m='¡Hola! Mi pedido en Lournar Coffee:\n'+txt+'\nTotal: $'+p.total+'\nID: '+num;
   st.carrito=[];updBadge();
 }
-function compartir(){
-  const m=document.getElementById('wa-btn').dataset.m||'Pedido en Lournar Coffee';
-  window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(m),'_blank');
+function finalizar(){
+  window.location.href='https://wa.me/5212280000000?text='+encodeURIComponent('Hola, acabo de realizar mi pedido en Lournar Coffee');
 }
 function volverInicio(){
   st.carrito=[];st.cli={nombre:'',tel:'',dir:'',cp:''};st.envio=0;st.pago='efectivo';

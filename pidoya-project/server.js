@@ -76,8 +76,12 @@ app.post('/api/crear-pedido', (req, res) => {
   });
 
   const total = subtotal + (costo_envio || 0);
+  const hoy = new Date().toDateString();
+  const contadorHoy = database.pedidos.filter(p => new Date(p.timestamp).toDateString() === hoy).length;
+  const numero_corto = 'L' + (contadorHoy + 1);
   const pedido = {
     id: uuidv4(),
+    numero_corto,
     timestamp: new Date().toISOString(),
     cliente: { nombre: cliente_nombre, email: cliente_email, telefono: cliente_telefono, direccion: cliente_direccion, cp: cliente_cp },
     items: items,

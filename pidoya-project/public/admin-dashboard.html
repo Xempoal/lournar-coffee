@@ -189,6 +189,11 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 .btn-dark:hover{opacity:.9}
 .btn-dark:disabled{opacity:.45;cursor:default}
 
+/* ── DATE FILTER ── */
+.dpill{height:30px;padding:0 14px;border-radius:999px;border:1px solid var(--out);background:var(--surf-c);color:var(--ink2);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 200ms,color 200ms,border-color 200ms}
+.dpill.on{background:var(--esp);color:#fff;border-color:var(--esp)}
+.dpill:hover:not(.on){background:var(--surf-hi)}
+
 /* ── TOAST ── */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:999px;font-size:13px;font-weight:500;opacity:0;transition:opacity 240ms,transform 240ms;z-index:500;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -262,6 +267,17 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
     </div>
   </div>
 
+  <!-- DATE FILTER -->
+  <div class="flt-scroll">
+    <div class="flt-row">
+      <button class="dpill on" data-d="today"     onclick="setDateFilter('today')">Hoy</button>
+      <button class="dpill"    data-d="yesterday" onclick="setDateFilter('yesterday')">Ayer</button>
+      <button class="dpill"    data-d="week"      onclick="setDateFilter('week')">Esta semana</button>
+      <button class="dpill"    data-d="month"     onclick="setDateFilter('month')">Este mes</button>
+      <button class="dpill"    data-d="all"       onclick="setDateFilter('all')">Todos</button>
+    </div>
+  </div>
+
   <div class="sec-meta">
     <span class="sec-cnt" id="sec-cnt">Cargando…</span>
   </div>
@@ -296,13 +312,14 @@ const SM = {
   enviando:   { label:'Enviando',   ico:'🚴', emoji:'🚴' },
   entregado:  { label:'Entregado',  ico:'📦', emoji:'📦' }
 };
-const PAY = { efectivo:'Efectivo', tarjeta:'Tarjeta', transferencia:'Transferencia bancaria' };
+const PAY = { efectivo:'Efectivo', tarjeta:'Tarjeta', transferencia:'Transferencia bancaria', sucursal:'Pago en sucursal' };
 
-let orders  = [];
-let curFlt  = 'all';
-let actOrd  = null;
-let selSt   = null;
-let lastUpd = null;
+let orders     = [];
+let curFlt     = 'all';
+let curDateFlt = 'today';
+let actOrd     = null;
+let selSt      = null;
+let lastUpd    = null;
 let toastT;
 let rfInt;
 
@@ -333,15 +350,38 @@ function setUpdLbl(ok){
   lbl.textContent = 'Ahora mismo';
 }
 
+function dateMatch(ts){
+  const d=new Date(ts);
+  const now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const ms=86400000;
+  switch(curDateFlt){
+    case 'today':     return d>=today;
+    case 'yesterday': return d>=new Date(today-ms)&&d<today;
+    case 'week':      return d>=new Date(today-6*ms);
+    case 'month':     return d>=new Date(today-29*ms);
+    default:          return true;
+  }
+}
+function setDateFilter(f){
+  curDateFlt=f;
+  document.querySelectorAll('.dpill').forEach(p=>p.classList.toggle('on',p.dataset.d===f));
+  updateStats();renderOrders(null);
+}
 function updateStats(){
-  const c={all:orders.length,confirmado:0,preparando:0,listo:0,enviando:0,entregado:0};
-  orders.forEach(p=>{ if(c[p.estado]!==undefined) c[p.estado]++; });
+  const dated=orders.filter(p=>dateMatch(p.timestamp));
+  const c={all:dated.length,confirmado:0,preparando:0,listo:0,enviando:0,entregado:0};
+  dated.forEach(p=>{ if(c[p.estado]!==undefined) c[p.estado]++; });
   Object.keys(c).forEach(k=>{ const e=document.getElementById('sn-'+k); if(e) e.textContent=c[k]; });
 }
 
 /* ── RENDER ── */
 function renderOrders(delay){
-  const filt = curFlt==='all' ? orders : orders.filter(p=>p.estado===curFlt);
+  const filt = orders.filter(p=>{
+    const mDate=dateMatch(p.timestamp);
+    const mStatus=curFlt==='all'||p.estado===curFlt;
+    return mDate&&mStatus;
+  });
   const grid = document.getElementById('ogrid');
   const cnt  = document.getElementById('sec-cnt');
   cnt.textContent = filt.length===0 ? 'Sin pedidos' : filt.length===1 ? '1 pedido' : filt.length+' pedidos';
@@ -358,9 +398,10 @@ function cardHTML(p, i){
   const nxt = nextSt(p.estado, isD);
   const nm  = nxt ? SM[nxt] : null;
   const del = i>=0 ? 'animation-delay:'+Math.min(i*40,280)+'ms' : 'animation-delay:0ms';
+  const oid = p.numero_corto || ('#'+p.id.substring(0,8));
   return '<div class="ocard'+(p.estado==='entregado'?' done':'')+'" style="'+del+'" onclick="openDetail(\''+p.id+'\')">'
     +'<div class="oc-head">'
-    +'<div><div class="oc-id">#'+p.id.substring(0,8)+'</div>'
+    +'<div><div class="oc-id">'+oid+'</div>'
     +'<div class="oc-time"><span class="msym" style="font-size:12px">schedule</span>'+esc(relTime(p.timestamp))+'</div></div>'
     +'<span class="sbadge '+p.estado+'">'+s.ico+' '+s.label+'</span>'
     +'</div>'
@@ -381,7 +422,7 @@ function cardHTML(p, i){
 function setFilter(f){
   curFlt = f;
   document.querySelectorAll('.fpill').forEach(p=>p.classList.toggle('on', p.dataset.f===f));
-  renderOrders(null);
+  updateStats();renderOrders(null);
 }
 
 /* ── QUICK ADVANCE ── */
@@ -397,7 +438,7 @@ function openDetail(id){
   if(!p) return;
   actOrd = p;
   selSt  = p.estado;
-  document.getElementById('m-oid').textContent   = '#'+p.id.substring(0,8).toUpperCase();
+  document.getElementById('m-oid').textContent   = p.numero_corto || ('#'+p.id.substring(0,8).toUpperCase());
   document.getElementById('m-cname').textContent = p.cliente.nombre;
   document.getElementById('m-body').innerHTML = buildBody(p);
   buildSsel(p.estado);
@@ -441,8 +482,6 @@ function buildBody(p){
   h += dr('Tipo de entrega', isD?'🚴 Domicilio':'🏪 Recoger en tienda');
   h += dr('Fecha y hora', ts);
   h += '</div>';
-  /* timeline */
-  h += '<div><div class="ds-lbl">Estado</div><div class="tl">'+buildTL(p.estado, isD)+'</div></div>';
   return h;
 }
 
