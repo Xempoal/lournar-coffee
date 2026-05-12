@@ -207,10 +207,7 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
         <div class="m-oid" id="m-oid"></div>
         <div class="m-cname" id="m-cname">Detalle</div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-        <span class="sbadge" id="m-badge"></span>
-        <button class="icon-btn" onclick="closeModal()"><span class="msym">close</span></button>
-      </div>
+      <button class="icon-btn" style="flex-shrink:0" onclick="closeModal()"><span class="msym">close</span></button>
     </div>
     <div class="m-body" id="m-body"></div>
     <div class="m-foot">
@@ -402,10 +399,6 @@ function openDetail(id){
   selSt  = p.estado;
   document.getElementById('m-oid').textContent   = '#'+p.id.substring(0,8).toUpperCase();
   document.getElementById('m-cname').textContent = p.cliente.nombre;
-  const b = document.getElementById('m-badge');
-  const s = SM[p.estado]||{ico:'?',label:p.estado};
-  b.className = 'sbadge '+p.estado;
-  b.textContent = s.ico+' '+s.label;
   document.getElementById('m-body').innerHTML = buildBody(p);
   buildSsel(p.estado);
   document.getElementById('ov').classList.add('on');
@@ -492,8 +485,6 @@ async function selStatus(s){
   selSt = s;
   // Optimistic update — apply immediately in the UI
   document.querySelectorAll('.sopt').forEach(el=>{ el.classList.toggle('on', el.dataset.s===s); el.style.pointerEvents='none'; });
-  const b = document.getElementById('m-badge');
-  b.className='sbadge '+s; b.textContent=SM[s].ico+' '+SM[s].label;
   // Persist
   const ok = await doUpdate(actOrd.id, s);
   document.querySelectorAll('.sopt').forEach(el=>el.style.pointerEvents='');
@@ -506,7 +497,6 @@ async function selStatus(s){
     // Revert on error
     selSt = prev;
     document.querySelectorAll('.sopt').forEach(el=>el.classList.toggle('on', el.dataset.s===prev));
-    b.className='sbadge '+prev; b.textContent=SM[prev].ico+' '+SM[prev].label;
     showToast('Error al actualizar');
   }
 }
