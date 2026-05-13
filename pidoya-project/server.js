@@ -154,14 +154,38 @@ app.get('/admin/dashboard/:slug', (req, res) => {
 // ══════════════════════════════════════
 
 // GET /api/menu/:restaurante_id
-app.get('/api/menu/:restaurante_id', (req, res) => {
-  const rest = { ...restaurante, telefono: menu.restaurante.telefono };
-  res.json({
-    success: true,
-    restaurante: rest,
-    menu: menu,
-    zonas_envio: menu.zonas_envio
-  });
+app.get('/api/menu/:restaurante_id', async (req, res) => {
+  try {
+    const [catsResult, prodsResult] = await Promise.all([
+      supabase.from('menu_categories').select('*').eq('restaurant_id', 1).order('orden', { ascending: true }),
+      supabase.from('menu_products').select('*').eq('restaurant_id', 1).eq('disponible', true).order('orden', { ascending: true })
+    ]);
+    const cats  = catsResult.data  || [];
+    const prods = prodsResult.data || [];
+    const categorias = cats.map(cat => ({
+      id: cat.category_id,
+      nombre: cat.nombre,
+      items: prods
+        .filter(p => p.category_id === cat.category_id)
+        .map(p => ({
+          id: p.product_id,
+          nombre: p.nombre,
+          descripcion: p.descripcion || '',
+          precio: parseFloat(p.precio),
+          imagen: p.imagen_url || ''
+        }))
+    }));
+    const rest = { ...restaurante, telefono: menu.restaurante.telefono };
+    res.json({
+      success: true,
+      restaurante: rest,
+      menu: { categorias },
+      zonas_envio: menu.zonas_envio
+    });
+  } catch (err) {
+    console.error('Error building menu:', err);
+    res.status(500).json({ success: false, error: 'Error obteniendo menú' });
+  }
 });
 
 // POST /api/calcular-envio
@@ -392,13 +416,13 @@ app.get('/api/admin/menu/products', requireAuth, async (req, res) => {
 
 // POST /api/admin/menu/products — agregar producto
 app.post('/api/admin/menu/products', requireAuth, async (req, res) => {
-  const { nombre, descripcion, precio, category_id, tiempo_preparacion } = req.body;
+  const { nombre, descripcion, precio, category_id, tiempo_preparacion, imagen_url } = req.body;
   if (!nombre || !precio) return res.status(400).json({ success: false, error: 'Nombre y precio requeridos' });
   try {
     const product_id = nombre.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') + '_' + Date.now();
     const { data, error } = await supabase
       .from('menu_products')
-      .insert([{ restaurant_id: req.auth.restaurant_id, category_id, product_id, nombre, descripcion: descripcion || '', precio, tiempo_preparacion: tiempo_preparacion || 5, disponible: true }])
+      .insert([{ restaurant_id: req.auth.restaurant_id, category_id, product_id, nombre, descripcion: descripcion || '', precio, tiempo_preparacion: tiempo_preparacion || 5, disponible: true, imagen_url: imagen_url || null }])
       .select();
     if (error) throw error;
     res.json({ success: true, product: data[0] });
@@ -409,11 +433,11 @@ app.post('/api/admin/menu/products', requireAuth, async (req, res) => {
 
 // PUT /api/admin/menu/products/:id — editar producto
 app.put('/api/admin/menu/products/:id', requireAuth, async (req, res) => {
-  const { nombre, descripcion, precio, category_id, tiempo_preparacion } = req.body;
+  const { nombre, descripcion, precio, category_id, tiempo_preparacion, imagen_url } = req.body;
   try {
     const { data, error } = await supabase
       .from('menu_products')
-      .update({ nombre, descripcion, precio, category_id, tiempo_preparacion: tiempo_preparacion || 5 })
+      .update({ nombre, descripcion, precio, category_id, tiempo_preparacion: tiempo_preparacion || 5, imagen_url: imagen_url || null })
       .eq('id', req.params.id)
       .eq('restaurant_id', req.auth.restaurant_id)
       .select();

@@ -73,7 +73,7 @@ main{max-width:720px;margin:0 auto;padding:24px var(--pad) 100px}
 .ov.on{opacity:1;pointer-events:all}
 
 /* MODAL */
-.modal{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(105%);width:100%;max-width:520px;background:var(--surf);border-radius:20px 20px 0 0;z-index:301;overflow:hidden;transition:transform 420ms cubic-bezier(.34,1.15,.64,1);box-shadow:0 -8px 48px var(--sh-d)}
+.modal{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(105%);width:100%;max-width:520px;background:var(--surf);border-radius:20px 20px 0 0;z-index:400;overflow:hidden;transition:transform 420ms cubic-bezier(.34,1.15,.64,1);box-shadow:0 -8px 48px var(--sh-d)}
 .modal.open{transform:translateX(-50%) translateY(0)}
 @media(min-width:600px){
   .modal{top:50%;bottom:auto;border-radius:20px;transform:translate(-50%,-48%) scale(.96);opacity:0;transition:transform 330ms cubic-bezier(.34,1.15,.64,1),opacity 260ms}
@@ -83,7 +83,7 @@ main{max-width:720px;margin:0 auto;padding:24px var(--pad) 100px}
 .m-head{padding:16px 20px;border-bottom:1px solid var(--out);display:flex;align-items:center;justify-content:space-between}
 .m-title{font-family:var(--serif);font-size:19px;font-weight:500}
 .m-close{width:34px;height:34px;border:none;border-radius:50%;background:var(--surf-c);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
-.m-body{padding:20px;display:flex;flex-direction:column;gap:14px;max-height:65dvh;overflow-y:auto}
+.m-body{padding:20px;display:flex;flex-direction:column;gap:14px;max-height:65dvh;overflow-y:auto;position:relative}
 .m-foot{padding:16px 20px env(safe-area-inset-bottom,16px);border-top:1px solid var(--out);display:flex;gap:10px}
 
 /* FORM */
@@ -96,6 +96,7 @@ main{max-width:720px;margin:0 auto;padding:24px var(--pad) 100px}
   font-family:var(--sans);font-size:14px;
   outline:none;transition:border-color 200ms,box-shadow 200ms;
   resize:none;
+  position:relative;pointer-events:auto;
 }
 .field input:focus,.field textarea:focus,.field select:focus{
   border-color:var(--esp);
@@ -169,6 +170,10 @@ main{max-width:720px;margin:0 auto;padding:24px var(--pad) 100px}
     <div class="field">
       <label>Tiempo de preparación (minutos)</label>
       <input type="number" id="f-tiempo" placeholder="5" min="1" max="60" step="1" value="5">
+    </div>
+    <div class="field">
+      <label>Imagen (URL)</label>
+      <input type="text" id="f-imagen" placeholder="https://... (URL de la imagen)">
     </div>
   </div>
   <div class="m-foot">
@@ -304,6 +309,7 @@ function renderMenu() {
 function prodCard(p) {
   return `
     <div class="prod-card ${p.disponible ? '' : 'disabled'}" id="card-${p.id}">
+      ${p.imagen_url ? `<img src="${esc(p.imagen_url)}" width="40" height="40" style="border-radius:8px;object-fit:cover;flex-shrink:0;align-self:center;" onerror="this.style.display='none'">` : ''}
       <div class="prod-info">
         <div class="prod-name">${esc(p.nombre)}</div>
         <div class="prod-desc">${esc(p.descripcion || '—')}</div>
@@ -320,11 +326,6 @@ function prodCard(p) {
 
 // ══ TOGGLE DISPONIBLE ══
 async function toggleDisponible(id, disponible) {
-  const card = document.getElementById('card-' + id);
-  const btn  = card.querySelector('.toggle');
-  btn.classList.toggle('on', disponible);
-  card.classList.toggle('disabled', !disponible);
-
   try {
     const r = await fetch(API + '/admin/menu/products/' + id, {
       method: 'PATCH',
@@ -333,17 +334,15 @@ async function toggleDisponible(id, disponible) {
     });
     const d = await r.json();
     if (d.success) {
-      const p = products.find(p => p.id === id);
-      if (p) p.disponible = disponible;
+      const idx = products.findIndex(p => p.id === id);
+      if (idx !== -1) products[idx].disponible = disponible;
+      renderMenu();
       showToast(disponible ? '✅ Producto activado' : '⏸️ Producto desactivado');
     } else {
-      // Revert
-      btn.classList.toggle('on', !disponible);
-      card.classList.toggle('disabled', disponible);
+      showToast('Error actualizando producto');
     }
   } catch (e) {
-    btn.classList.toggle('on', !disponible);
-    card.classList.toggle('disabled', disponible);
+    showToast('Error de conexión');
   }
 }
 
@@ -355,6 +354,7 @@ function openAdd() {
   document.getElementById('f-desc').value   = '';
   document.getElementById('f-precio').value = '';
   document.getElementById('f-tiempo').value = '5';
+  document.getElementById('f-imagen').value = '';
   if (categories.length > 0) {
     document.getElementById('f-categoria').value = categories[0].category_id;
   }
@@ -372,6 +372,7 @@ function openEdit(id) {
   document.getElementById('f-precio').value  = p.precio != null ? String(parseFloat(p.precio)) : '';
   document.getElementById('f-tiempo').value  = p.tiempo_preparacion || 5;
   document.getElementById('f-categoria').value = p.category_id;
+  document.getElementById('f-imagen').value  = p.imagen_url || '';
   openModal();
 }
 
@@ -384,6 +385,7 @@ async function saveProduct() {
   const precio    = parseFloat(precioVal);
   const tiempo    = parseInt(document.getElementById('f-tiempo').value) || 5;
   const catId     = document.getElementById('f-categoria').value;
+  const imagenUrl = document.getElementById('f-imagen').value.trim();
 
   if (!nombre || !precioVal || isNaN(precio) || precio <= 0) {
     showToast('⚠️ Nombre y precio son requeridos');
@@ -401,14 +403,14 @@ async function saveProduct() {
       r = await fetch(API + '/admin/menu/products/' + id, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
-        body: JSON.stringify({ nombre, descripcion: desc, precio, tiempo_preparacion: tiempo, category_id: catId })
+        body: JSON.stringify({ nombre, descripcion: desc, precio, tiempo_preparacion: tiempo, category_id: catId, imagen_url: imagenUrl || null })
       });
     } else {
       // Agregar
       r = await fetch(API + '/admin/menu/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
-        body: JSON.stringify({ nombre, descripcion: desc, precio, tiempo_preparacion: tiempo, category_id: catId, restaurant_id: 1 })
+        body: JSON.stringify({ nombre, descripcion: desc, precio, tiempo_preparacion: tiempo, category_id: catId, restaurant_id: 1, imagen_url: imagenUrl || null })
       });
     }
     d = await r.json();
