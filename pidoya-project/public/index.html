@@ -440,24 +440,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
     <div>
       <div class="co-sec-lbl" style="padding:0 0 14px">¿Qué sigue?</div>
-      <div class="timeline">
-        <div class="tl-step">
-          <div class="tl-col"><div class="tl-dot done"></div><div class="tl-line done"></div></div>
-          <div class="tl-content"><div class="tl-title">Confirmado</div><div class="tl-desc">Tu orden ha sido recibida.</div></div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-col"><div class="tl-dot act"></div><div class="tl-line pend"></div></div>
-          <div class="tl-content"><div class="tl-title act">En preparación</div><div class="tl-desc">Moliendo los granos para ti.</div></div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-col"><div class="tl-dot pend"></div><div class="tl-line pend"></div></div>
-          <div class="tl-content"><div class="tl-title pend">Listo / En camino</div><div class="tl-desc pend">Pronto saldrá hacia ti.</div></div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-col"><div class="tl-dot pend"></div></div>
-          <div class="tl-content"><div class="tl-title pend">Entregado</div></div>
-        </div>
-      </div>
+      <div class="timeline" id="c-timeline"></div>
     </div>
     <div class="barista-note">P.D. Hoy preparamos pan recién horneado. ¡Pregunta por la pieza del día!</div>
     <div class="conf-bottom">
@@ -836,11 +819,24 @@ function confirmar(){
 /* ── CONFIRMATION ── */
 function renderConf(p){
   const num=p.numero_corto||('L'+String(Math.floor(Math.random()*9000)+1000));
+  const isD=p.costo_envio>0;
   document.getElementById('c-ord').textContent=num;
-  document.getElementById('c-time').textContent='12–15 min';
+  document.getElementById('c-time').textContent=isD?'30–45 min':'12–15 min';
   const el=document.getElementById('c-items');
   const rows=st.carrito.map(i=>'<div style="display:flex;justify-content:space-between"><span>'+i.qty+'× '+esc(i.name)+(i.mods.length?' ('+i.mods.slice(0,2).join(', ')+')':'')+'</span><span>$'+(i.price*i.qty)+'</span></div>').join('');
   el.innerHTML=rows+'<div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--out);margin-top:4px;font-weight:500;color:var(--ink)"><span>Total</span><span>$'+p.total+'</span></div>';
+  // Timeline dinámico según tipo de entrega
+  const steps=isD
+    ?[{t:'Confirmado',d:'Tu orden ha sido recibida.',s:'done'},{t:'En preparación',d:'Moliendo los granos para ti.',s:'act'},{t:'En camino',d:'Tu pedido está en ruta.',s:'pend'},{t:'Entregado',d:'',s:'pend'}]
+    :[{t:'Confirmado',d:'Tu orden ha sido recibida.',s:'done'},{t:'En preparación',d:'Moliendo los granos para ti.',s:'act'},{t:'Listo para recoger',d:'Pasa por nosotros cuando quieras.',s:'pend'},{t:'Entregado',d:'',s:'pend'}];
+  const tlHTML=steps.map((step,i)=>{
+    const isLast=i===steps.length-1;
+    return '<div class="tl-step">'
+      +'<div class="tl-col"><div class="tl-dot '+step.s+'"></div>'+(isLast?'':'<div class="tl-line '+(step.s==='done'?'done':'pend')+'"></div>')+'</div>'
+      +'<div class="tl-content"><div class="tl-title'+(step.s==='act'?' act':step.s==='pend'?' pend':'')+'">'+esc(step.t)+'</div>'+(step.d?'<div class="tl-desc'+(step.s==='pend'?' pend':'')+'">'+esc(step.d)+'</div>':'')+'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('c-timeline').innerHTML=tlHTML;
   st.carrito=[];updBadge();
 }
 function finalizar(){

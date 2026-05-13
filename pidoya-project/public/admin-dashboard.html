@@ -193,6 +193,11 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 .dpill.on{background:var(--esp);color:#fff;border-color:var(--esp)}
 .dpill:hover:not(.on){background:var(--surf-hi)}
 
+/* ── WHATSAPP BTN ── */
+.wa-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#25D366;color:#fff;border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;margin-top:10px;transition:opacity 150ms}
+.wa-btn:hover{opacity:.88}
+.wa-btn .msym{font-size:15px}
+
 /* ── TOAST ── */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:999px;font-size:13px;font-weight:500;opacity:0;transition:opacity 240ms,transform 240ms;z-index:500;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -313,14 +318,15 @@ const SM = {
 };
 const PAY = { efectivo:'Efectivo', tarjeta:'Tarjeta', transferencia:'Transferencia bancaria', sucursal:'Pago en sucursal' };
 
-let orders     = [];
-let curFlt     = 'all';
-let curDateFlt = 'today';
-let actOrd     = null;
-let selSt      = null;
-let lastUpd    = null;
+let orders        = [];
+let curFlt        = 'all';
+let curDateFlt    = 'today';
+let actOrd        = null;
+let selSt         = null;
+let lastUpd       = null;
 let toastT;
 let rfInt;
+let knownOrderIds = null;
 
 /* ── FETCH ── */
 async function fetch_orders(){
@@ -336,6 +342,14 @@ async function load(first){
   const ok = await fetch_orders();
   setUpdLbl(ok);
   if(!ok) return;
+  if(knownOrderIds !== null){
+    const newOnes = orders.filter(o => !knownOrderIds.has(o.id));
+    if(newOnes.length > 0){
+      playNotif();
+      showToast('🔔 ' + newOnes.length + ' nuevo' + (newOnes.length > 1 ? 's pedidos' : ' pedido'));
+    }
+  }
+  knownOrderIds = new Set(orders.map(o => o.id));
   updateStats();
   renderOrders(first ? 0 : null);
 }
@@ -458,6 +472,12 @@ function buildBody(p){
     h += dr('Dirección', p.cliente.direccion||'—');
     h += dr('Código postal', p.cliente.cp||'—');
   }
+  if(p.cliente.telefono){
+    const waNum = p.cliente.telefono.replace(/\D/g,'');
+    const waTel = waNum.length === 10 ? '52' + waNum : waNum;
+    const waMsg = encodeURIComponent('Hola ' + p.cliente.nombre + ', tu pedido ' + (p.numero_corto||'') + ' en Lournar Coffee está listo. ☕');
+    h += '<a class="wa-btn" href="https://wa.me/'+waTel+'?text='+waMsg+'" target="_blank" rel="noopener"><span class="msym">chat</span>WhatsApp al cliente</a>';
+  }
   h += '</div>';
   /* items */
   h += '<div><div class="ds-lbl">Artículos</div>';
@@ -481,6 +501,8 @@ function buildBody(p){
   h += dr('Tipo de entrega', isD?'🚴 Domicilio':'🏪 Recoger en tienda');
   h += dr('Fecha y hora', ts);
   h += '</div>';
+  /* timeline */
+  h += '<div><div class="ds-lbl">Progreso</div><div class="tl">'+buildTL(p.estado, isD)+'</div></div>';
   return h;
 }
 
@@ -511,7 +533,7 @@ function buildSsel(p){
   const isD = isDelivery(p);
   const opts = isD
     ? ['preparando','listo','enviando','entregado']
-    : ['preparando','listo'];
+    : ['preparando','listo','entregado'];
   const curM = SM[cur]||{emoji:'?',label:cur};
   const lbl = document.getElementById('ssel-lbl');
   if(lbl) lbl.textContent = 'Estado actual: '+curM.emoji+' '+curM.label+' — toca para cambiar';
@@ -603,6 +625,28 @@ function showToast(m){
   t.textContent=m; t.classList.add('on');
   clearTimeout(toastT);
   toastT=setTimeout(()=>t.classList.remove('on'),2700);
+}
+
+/* ── NOTIFICATION SOUND ── */
+function playNotif(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const tone = (freq, start, dur) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ctx.currentTime + start);
+      gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + start + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + dur + 0.05);
+    };
+    tone(880,  0,    0.14);
+    tone(1100, 0.18, 0.20);
+    tone(1320, 0.38, 0.28);
+  }catch(e){}
 }
 
 /* ── REFRESH ── */
