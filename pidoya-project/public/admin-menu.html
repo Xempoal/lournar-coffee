@@ -117,6 +117,10 @@ main{max-width:720px;margin:0 auto;padding:24px var(--pad) 100px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;font-size:13px;font-weight:500;white-space:nowrap;opacity:0;transition:opacity 250ms,transform 250ms;pointer-events:none;z-index:500}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* NAV */
+.nav-btn{height:36px;padding:0 14px;border:1px solid var(--out);border-radius:999px;background:var(--surf-c);color:var(--ink2);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:background 150ms,color 150ms;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:var(--surf-hi);color:var(--ink)}
+
 /* EMPTY */
 .empty{text-align:center;padding:40px 20px;color:var(--ink2)}
 .empty .msym{font-size:40px;opacity:.2;display:block;margin-bottom:12px}
@@ -151,7 +155,7 @@ main{max-width:720px;margin:0 auto;padding:24px var(--pad) 100px}
     <div class="field-row">
       <div class="field">
         <label>Precio ($)</label>
-        <input type="number" id="f-precio" placeholder="55" min="1" max="9999" step="1">
+        <input type="text" inputmode="decimal" id="f-precio" placeholder="55">
       </div>
       <div class="field">
         <label>Categoría</label>
@@ -202,9 +206,10 @@ main{max-width:720px;margin:0 auto;padding:24px var(--pad) 100px}
       <span class="h-title">Gestión de Menú</span>
       <span class="h-tag" id="rest-name">Admin</span>
     </div>
-    <button class="add-btn" onclick="openAdd()">
-      <span class="msym" style="font-size:16px">add</span> Agregar
-    </button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="nav-btn" onclick="goBack()"><span class="msym" style="font-size:16px">receipt_long</span> Ver Pedidos</button>
+      <button class="add-btn" onclick="openAdd()"><span class="msym" style="font-size:16px">add</span> Agregar</button>
+    </div>
   </div>
 </header>
 
@@ -364,7 +369,7 @@ function openEdit(id) {
   document.getElementById('f-id').value      = p.id;
   document.getElementById('f-nombre').value  = p.nombre;
   document.getElementById('f-desc').value    = p.descripcion || '';
-  document.getElementById('f-precio').value  = p.precio;
+  document.getElementById('f-precio').value  = p.precio != null ? String(parseFloat(p.precio)) : '';
   document.getElementById('f-tiempo').value  = p.tiempo_preparacion || 5;
   document.getElementById('f-categoria').value = p.category_id;
   openModal();
@@ -372,14 +377,15 @@ function openEdit(id) {
 
 // ══ GUARDAR ══
 async function saveProduct() {
-  const id      = document.getElementById('f-id').value;
-  const nombre  = document.getElementById('f-nombre').value.trim();
-  const desc    = document.getElementById('f-desc').value.trim();
-  const precio  = parseFloat(document.getElementById('f-precio').value);
-  const tiempo  = parseInt(document.getElementById('f-tiempo').value) || 5;
-  const catId   = document.getElementById('f-categoria').value;
+  const id        = document.getElementById('f-id').value;
+  const nombre    = document.getElementById('f-nombre').value.trim();
+  const desc      = document.getElementById('f-desc').value.trim();
+  const precioVal = document.getElementById('f-precio').value.trim();
+  const precio    = parseFloat(precioVal);
+  const tiempo    = parseInt(document.getElementById('f-tiempo').value) || 5;
+  const catId     = document.getElementById('f-categoria').value;
 
-  if (!nombre || !precio || precio <= 0) {
+  if (!nombre || !precioVal || isNaN(precio) || precio <= 0) {
     showToast('⚠️ Nombre y precio son requeridos');
     return;
   }

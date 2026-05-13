@@ -193,6 +193,10 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 .wa-btn:hover{opacity:.88}
 .wa-btn .msym{font-size:15px}
 
+/* ── NAV PILL ── */
+.nav-pill{height:32px;padding:0 12px;border:1px solid var(--out);border-radius:999px;background:var(--surf-c);color:var(--ink2);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;transition:background 150ms,color 150ms;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.nav-pill:hover{background:var(--surf-hi);color:var(--ink)}
+
 </style>
 </head>
 <body>
@@ -220,7 +224,7 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 <header class="adm-header">
   <div class="adm-header-inner">
     <div class="h-left">
-      <span class="h-logo">Lournar Coffee</span>
+      <span class="h-logo" id="h-logo">Admin</span>
       <span class="h-tag">Admin</span>
     </div>
     <div class="h-right">
@@ -228,6 +232,9 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
         <div class="pdot" id="pdot"></div>
         <span id="upd-lbl" style="display:none">Hace 0s</span>
       </div>
+      <button class="nav-pill" onclick="navToMenu()" title="Gestión de Menú">
+        <span class="msym" style="font-size:15px">restaurant_menu</span> Menú
+      </button>
       <button class="icon-btn" id="rbtn" onclick="manualRefresh()" title="Actualizar">
         <span class="msym">refresh</span>
       </button>
@@ -297,23 +304,29 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 
 <script>
 (function(){
-  const token = sessionStorage.getItem('pidoya_token');
-  const slug = sessionStorage.getItem('pidoya_slug');
-  if(!token || !slug){
-    const pathSlug = window.location.pathname.split('/').pop();
-    window.location.href = '/admin/' + (pathSlug || 'lournar');
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  const pathSlug  = pathParts[pathParts.length - 1] || 'lournar';
+  const token     = sessionStorage.getItem('pidoya_token');
+  const slug      = sessionStorage.getItem('pidoya_slug') || pathSlug;
+  if (!token || !slug) {
+    window.location.href = '/admin/' + pathSlug;
     return;
   }
-  fetch('/api/auth/verify',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({token})
-  }).then(r=>r.json()).then(d=>{
-    if(!d.success){
+  const restName = sessionStorage.getItem('pidoya_restaurant') || 'Admin';
+  const logoEl   = document.getElementById('h-logo');
+  if (logoEl) logoEl.textContent = restName;
+  fetch('/api/auth/verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token })
+  }).then(r => r.json()).then(d => {
+    if (!d.success) {
       sessionStorage.clear();
-      window.location.href = '/admin/' + slug;
+      window.location.href = '/admin/' + pathSlug;
+    } else if (d.restaurant_name) {
+      if (logoEl) logoEl.textContent = d.restaurant_name;
     }
-  }).catch(()=>{});
+  }).catch(() => {});
 })();
 </script>
 <script>
@@ -582,6 +595,13 @@ function closeModal(){
   document.getElementById('ov').classList.remove('on');
   document.getElementById('modal').classList.remove('open');
   setTimeout(()=>actOrd=null, 450);
+}
+
+function navToMenu(){
+  const menuSlug = sessionStorage.getItem('pidoya_slug') ||
+    window.location.pathname.split('/').filter(Boolean).pop() ||
+    'lournar';
+  window.location.href = '/admin/menu/' + menuSlug;
 }
 
 /* ── HELPERS ── */
