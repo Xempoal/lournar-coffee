@@ -351,7 +351,110 @@ function calculateShipping(cp) {
   const zona = menu.zonas_envio?.find(z => z.codigos_postales?.includes(cp));
   return zona ? zona.costo : 90;
 }
+// ══════════════════════════════════════
+// RUTAS GESTIÓN DE MENÚ (agregar después de /api/auth/verify)
+// ══════════════════════════════════════
 
+// GET /admin/menu/:slug → servir página de menú
+app.get('/admin/menu/:slug', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin-menu.html'));
+});
+
+// GET /api/admin/menu/categories
+app.get('/api/admin/menu/categories', requireAuth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('menu_categories')
+      .select('*')
+      .eq('restaurant_id', req.auth.restaurant_id)
+      .order('orden', { ascending: true });
+    if (error) throw error;
+    res.json({ success: true, categories: data || [] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error obteniendo categorías' });
+  }
+});
+
+// GET /api/admin/menu/products
+app.get('/api/admin/menu/products', requireAuth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('menu_products')
+      .select('*')
+      .eq('restaurant_id', req.auth.restaurant_id)
+      .order('orden', { ascending: true });
+    if (error) throw error;
+    res.json({ success: true, products: data || [] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error obteniendo productos' });
+  }
+});
+
+// POST /api/admin/menu/products — agregar producto
+app.post('/api/admin/menu/products', requireAuth, async (req, res) => {
+  const { nombre, descripcion, precio, category_id, tiempo_preparacion } = req.body;
+  if (!nombre || !precio) return res.status(400).json({ success: false, error: 'Nombre y precio requeridos' });
+  try {
+    const product_id = nombre.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') + '_' + Date.now();
+    const { data, error } = await supabase
+      .from('menu_products')
+      .insert([{ restaurant_id: req.auth.restaurant_id, category_id, product_id, nombre, descripcion: descripcion || '', precio, tiempo_preparacion: tiempo_preparacion || 5, disponible: true }])
+      .select();
+    if (error) throw error;
+    res.json({ success: true, product: data[0] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error creando producto' });
+  }
+});
+
+// PUT /api/admin/menu/products/:id — editar producto
+app.put('/api/admin/menu/products/:id', requireAuth, async (req, res) => {
+  const { nombre, descripcion, precio, category_id, tiempo_preparacion } = req.body;
+  try {
+    const { data, error } = await supabase
+      .from('menu_products')
+      .update({ nombre, descripcion, precio, category_id, tiempo_preparacion: tiempo_preparacion || 5 })
+      .eq('id', req.params.id)
+      .eq('restaurant_id', req.auth.restaurant_id)
+      .select();
+    if (error) throw error;
+    res.json({ success: true, product: data[0] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error actualizando producto' });
+  }
+});
+
+// PATCH /api/admin/menu/products/:id — toggle disponible
+app.patch('/api/admin/menu/products/:id', requireAuth, async (req, res) => {
+  const { disponible } = req.body;
+  try {
+    const { data, error } = await supabase
+      .from('menu_products')
+      .update({ disponible })
+      .eq('id', req.params.id)
+      .eq('restaurant_id', req.auth.restaurant_id)
+      .select();
+    if (error) throw error;
+    res.json({ success: true, product: data[0] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error actualizando producto' });
+  }
+});
+
+// DELETE /api/admin/menu/products/:id — eliminar producto
+app.delete('/api/admin/menu/products/:id', requireAuth, async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from('menu_products')
+      .delete()
+      .eq('id', req.params.id)
+      .eq('restaurant_id', req.auth.restaurant_id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error eliminando producto' });
+  }
+});
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
