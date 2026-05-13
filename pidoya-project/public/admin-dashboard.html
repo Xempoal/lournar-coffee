@@ -198,14 +198,9 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 .wa-btn:hover{opacity:.88}
 .wa-btn .msym{font-size:15px}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:999px;font-size:13px;font-weight:500;opacity:0;transition:opacity 240ms,transform 240ms;z-index:500;pointer-events:none;white-space:nowrap}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
-
-<div class="toast" id="toast"></div>
 
 <!-- MODAL -->
 <div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
@@ -324,7 +319,6 @@ let curDateFlt    = 'today';
 let actOrd        = null;
 let selSt         = null;
 let lastUpd       = null;
-let toastT;
 let rfInt;
 let knownOrderIds = null;
 
@@ -346,7 +340,6 @@ async function load(first){
     const newOnes = orders.filter(o => !knownOrderIds.has(o.id));
     if(newOnes.length > 0){
       playNotif();
-      showToast('🔔 ' + newOnes.length + ' nuevo' + (newOnes.length > 1 ? 's pedidos' : ' pedido'));
     }
   }
   knownOrderIds = new Set(orders.map(o => o.id));
@@ -441,8 +434,7 @@ function setFilter(f){
 /* ── QUICK ADVANCE ── */
 async function quickAdv(id, st){
   const ok = await doUpdate(id, st);
-  if(ok){ showToast(SM[st]?.emoji+' '+SM[st]?.label); updateStats(); renderOrders(null); }
-  else showToast('Error al actualizar');
+  if(ok){ updateStats(); renderOrders(null); }
 }
 
 /* ── MODAL ── */
@@ -557,7 +549,6 @@ async function selStatus(s){
   document.querySelectorAll('.sopt').forEach(el=>el.style.pointerEvents='');
   if(ok){
     actOrd.estado = s;
-    showToast(SM[s].emoji+' '+SM[s].label);
     document.getElementById('m-body').innerHTML = buildBody(actOrd);
     buildSsel(actOrd);
     updateStats(); renderOrders(null);
@@ -566,7 +557,6 @@ async function selStatus(s){
     selSt = prev;
     actOrd.estado = prev;
     buildSsel(actOrd);
-    showToast('Error al actualizar');
   }
 }
 
@@ -618,14 +608,6 @@ function relTime(iso){
   return d.toLocaleDateString('es-MX',{day:'numeric',month:'short'});
 }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-/* ── TOAST ── */
-function showToast(m){
-  const t=document.getElementById('toast');
-  t.textContent=m; t.classList.add('on');
-  clearTimeout(toastT);
-  toastT=setTimeout(()=>t.classList.remove('on'),2700);
-}
 
 /* ── NOTIFICATION SOUND ── */
 function playNotif(){

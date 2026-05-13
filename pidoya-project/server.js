@@ -29,7 +29,7 @@ let database = {
       nombre: 'Lournar Coffee',
       direccion: 'Calle Araucarias, Col Indeco Animas, Xalapa, Veracruz',
       cp: '91190',
-      telefono: '+52 1 228 000 0000',
+      telefono: '+52 228 321 8838',
       activo: true
     }
   ]
