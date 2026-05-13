@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -16,6 +17,9 @@ const PORT = process.env.PORT || 5000;
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://pxkekjeioiuclizqtjvo.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_qWY-k5L991vGsjMgSRa85g_Yb_8YNXb';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Tokens activos (en memoria — se pierden al reiniciar, pero eso solo cierra sesión)
+const activeTokens = new Map();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -35,6 +39,115 @@ const restaurante = {
   telefono: '+52 228 321 8838',
   activo: true
 };
+
+// ══════════════════════════════════════
+// MIDDLEWARE DE AUTENTICACIÓN
+// ══════════════════════════════════════
+
+function requireAuth(req, res, next) {
+  const token = req.headers['x-auth-token'];
+  if (!token || !activeTokens.has(token)) {
+    return res.status(401).json({ success: false, error: 'No autorizado' });
+  }
+  req.auth = activeTokens.get(token);
+  next();
+}
+
+// ══════════════════════════════════════
+// RUTAS DE AUTENTICACIÓN
+// ══════════════════════════════════════
+
+// GET /api/auth/info/:slug — Info pública del restaurante (para mostrar nombre en login)
+app.get('/api/auth/info/:slug', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('restaurant_config')
+      .select('restaurant_name, slug')
+      .eq('slug', req.params.slug)
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ success: false, error: 'Negocio no encontrado' });
+    }
+
+    res.json({ success: true, restaurant_name: data.restaurant_name });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error interno' });
+  }
+});
+
+// POST /api/auth/login — Verificar PIN y generar token
+app.post('/api/auth/login', async (req, res) => {
+  const { slug, pin } = req.body;
+
+  if (!slug || !pin || pin.length !== 6) {
+    return res.status(400).json({ success: false, error: 'PIN de 6 dígitos requerido' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('restaurant_config')
+      .select('id, restaurant_name, slug, pin')
+      .eq('slug', slug)
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ success: false, error: 'Negocio no encontrado' });
+    }
+
+    if (data.pin !== pin) {
+      return res.status(401).json({ success: false, error: 'PIN incorrecto' });
+    }
+
+    // Generar token
+    const token = crypto.randomBytes(32).toString('hex');
+    activeTokens.set(token, {
+      restaurant_id: data.id,
+      restaurant_name: data.restaurant_name,
+      slug: data.slug,
+      created: Date.now()
+    });
+
+    // Limpiar tokens viejos (más de 24 horas)
+    for (const [t, info] of activeTokens) {
+      if (Date.now() - info.created > 86400000) activeTokens.delete(t);
+    }
+
+    res.json({
+      success: true,
+      token,
+      restaurant_id: data.id,
+      restaurant_name: data.restaurant_name
+    });
+  } catch (err) {
+    console.error('Error login:', err);
+    res.status(500).json({ success: false, error: 'Error interno' });
+  }
+});
+
+// POST /api/auth/verify — Verificar si un token sigue activo
+app.post('/api/auth/verify', (req, res) => {
+  const { token } = req.body;
+  if (!token || !activeTokens.has(token)) {
+    return res.json({ success: false });
+  }
+  const info = activeTokens.get(token);
+  res.json({ success: true, restaurant_name: info.restaurant_name, slug: info.slug });
+});
+
+// ══════════════════════════════════════
+// RUTAS PARA SERVIR PÁGINAS ADMIN
+// ══════════════════════════════════════
+
+// /admin/lournar → página de login
+app.get('/admin/:slug', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
+});
+
+// /admin/dashboard/lournar → dashboard (protegido por JS)
+app.get('/admin/dashboard/:slug', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
+});
 
 // ══════════════════════════════════════
 // RUTAS DEL FRONTEND (index.html)
@@ -78,19 +191,17 @@ app.post('/api/crear-pedido', async (req, res) => {
   const total = subtotal + (costo_envio || 0);
 
   try {
-    // Obtener número corto del día desde Supabase
     const hoy = new Date();
     const inicioHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()).toISOString();
-    
+
     const { data: pedidosHoy, error: countErr } = await supabase
       .from('orders')
       .select('id')
       .gte('created_at', inicioHoy);
-    
+
     const contadorHoy = (pedidosHoy && !countErr) ? pedidosHoy.length : 0;
     const numero_corto = 'L' + (contadorHoy + 1);
 
-    // Insertar pedido en Supabase
     const pedido = {
       order_number: numero_corto,
       customer_name: cliente_nombre,
@@ -102,7 +213,8 @@ app.post('/api/crear-pedido', async (req, res) => {
       items: items,
       total: total,
       status: 'preparando',
-      preparation_time: 0
+      preparation_time: 0,
+      restaurant_id: 1
     };
 
     const { data, error } = await supabase
@@ -117,7 +229,6 @@ app.post('/api/crear-pedido', async (req, res) => {
 
     const saved = data[0];
 
-    // Responder con formato compatible al frontend
     res.json({
       success: true,
       mensaje: 'Pedido creado exitosamente',
@@ -164,7 +275,6 @@ app.get('/api/admin/pedidos/:restaurante_id', async (req, res) => {
       return res.status(500).json({ success: false, error: 'Error obteniendo pedidos' });
     }
 
-    // Transformar formato de Supabase al formato que espera el admin dashboard
     const pedidos = (data || []).map(row => ({
       id: row.id.toString(),
       numero_corto: row.order_number,
@@ -177,7 +287,7 @@ app.get('/api/admin/pedidos/:restaurante_id', async (req, res) => {
         cp: row.postal_code || ''
       },
       items: row.items || [],
-      subtotal: row.delivery_type === 'delivery' 
+      subtotal: row.delivery_type === 'delivery'
         ? parseFloat(row.total) - calculateShipping(row.postal_code)
         : parseFloat(row.total),
       costo_envio: row.delivery_type === 'delivery' ? calculateShipping(row.postal_code) : 0,
@@ -260,6 +370,7 @@ app.listen(PORT, async () => {
 ║   🌐 http://localhost:${PORT}            ║
 ║   📱 Lournar Coffee - Xalapa          ║
 ║   ☁️  Supabase conectado               ║
+║   🔐 Auth con PIN activado            ║
 ║   ✅ Base de datos: ${count} pedidos       ║
 ╚════════════════════════════════════════╝
   `);

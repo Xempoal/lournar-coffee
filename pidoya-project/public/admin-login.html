@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Admin · Pidoya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+<style>
+:root {
+  --bg:#FAF6F1; --bg2:#F2EBE0; --ink:#2C2418; --ink2:#6B5D4F;
+  --esp:#8B6F47; --cara:#D4B896; --olive:#5C6B4F; --terra:#B85C3D;
+  --surf:#fdf8f7; --surf-low:#f7f3f1; --surf-c:#f1edec; --surf-hi:#ebe7e6;
+  --out:rgba(44,36,24,0.10); --outv:#c9c6bd;
+  --sh-s:rgba(44,36,24,0.06); --sh-l:rgba(44,36,24,0.12); --sh-d:rgba(44,36,24,0.18);
+  --serif:'Newsreader',Georgia,serif; --sans:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+/* Background pattern */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle at 20% 80%, rgba(212,184,150,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(139,111,71,0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 50%, rgba(92,107,79,0.05) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+.login-wrap{
+  position:relative;z-index:1;
+  width:100%;max-width:380px;padding:24px;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+/* Logo / Brand */
+.brand{text-align:center;margin-bottom:40px}
+.brand-icon{
+  width:64px;height:64px;border-radius:18px;
+  background:var(--ink);color:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:28px;font-weight:500;
+  margin:0 auto 16px;
+  box-shadow:0 8px 32px var(--sh-d);
+}
+.brand-name{font-family:var(--serif);font-size:26px;font-weight:500;letter-spacing:-.02em;margin-bottom:4px}
+.brand-sub{font-size:13px;color:var(--ink2);letter-spacing:.02em}
+
+/* Card */
+.login-card{
+  width:100%;
+  background:var(--surf);
+  border:1px solid var(--out);
+  border-radius:20px;
+  padding:32px 28px;
+  box-shadow:0 12px 48px var(--sh-l);
+}
+
+.login-card h2{
+  font-family:var(--serif);font-size:20px;font-weight:400;
+  text-align:center;margin-bottom:6px;
+}
+.login-card .subtitle{
+  font-size:13px;color:var(--ink2);text-align:center;margin-bottom:28px;
+}
+
+/* PIN Input */
+.pin-container{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.pin-digit{
+  width:46px;height:56px;
+  border:1.5px solid var(--outv);
+  border-radius:12px;
+  background:var(--surf-low);
+  font-family:var(--serif);
+  font-size:24px;font-weight:500;
+  text-align:center;
+  color:var(--ink);
+  outline:none;
+  transition:border-color 200ms,box-shadow 200ms,background 200ms;
+  -webkit-text-security:disc;
+}
+.pin-digit:focus{
+  border-color:var(--esp);
+  box-shadow:0 0 0 3px rgba(139,111,71,0.15);
+  background:var(--surf);
+}
+.pin-digit.filled{
+  border-color:var(--cara);
+  background:var(--surf);
+}
+.pin-digit.error{
+  border-color:var(--terra);
+  box-shadow:0 0 0 3px rgba(184,92,61,0.15);
+  animation:shake 400ms ease;
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+
+/* Button */
+.btn-login{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;height:52px;
+  background:var(--ink);color:var(--bg);
+  border:none;border-radius:12px;
+  font-family:var(--sans);font-size:14px;font-weight:500;
+  cursor:pointer;
+  box-shadow:0 4px 16px var(--sh-d);
+  transition:transform 150ms,opacity 150ms;
+}
+.btn-login:hover{opacity:.92}
+.btn-login:active{transform:scale(.97)}
+.btn-login:disabled{opacity:.4;cursor:default;transform:none}
+.btn-login .msym{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;font-size:18px}
+
+/* Error message */
+.error-msg{
+  text-align:center;font-size:13px;color:var(--terra);
+  margin-top:14px;min-height:20px;
+  transition:opacity 200ms;
+}
+
+/* Loading spinner */
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.spinner{width:18px;height:18px;border:2px solid rgba(250,246,241,0.3);border-top-color:var(--bg);border-radius:50%;animation:spin .6s linear infinite}
+
+/* Footer */
+.login-footer{
+  margin-top:32px;text-align:center;
+  font-size:12px;color:var(--ink2);opacity:.6;
+}
+.login-footer a{color:var(--esp);text-decoration:none}
+
+/* Fade in animation */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.login-wrap{animation:fadeUp 500ms ease both}
+.login-card{animation:fadeUp 500ms ease 100ms both}
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="brand">
+    <div class="brand-icon">P</div>
+    <div class="brand-name" id="brand-name">Pidoya</div>
+    <div class="brand-sub" id="brand-sub">Panel de administración</div>
+  </div>
+
+  <div class="login-card">
+    <h2>Ingresa tu PIN</h2>
+    <p class="subtitle">Introduce el PIN de 6 dígitos de tu negocio</p>
+
+    <div class="pin-container" id="pin-container">
+      <input class="pin-digit" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="0">
+      <input class="pin-digit" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="1">
+      <input class="pin-digit" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="2">
+      <input class="pin-digit" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="3">
+      <input class="pin-digit" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="4">
+      <input class="pin-digit" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="5">
+    </div>
+
+    <button class="btn-login" id="btn-login" disabled onclick="doLogin()">
+      <span class="msym">lock_open</span>
+      Entrar al panel
+    </button>
+
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+
+  <div class="login-footer">
+    Powered by <a href="#">Pidoya</a>
+  </div>
+</div>
+
+<script>
+// Obtener slug de la URL: /admin/lournar → lournar
+const pathParts = window.location.pathname.split('/').filter(Boolean);
+const slug = pathParts.length >= 2 ? pathParts[1] : pathParts[0] || '';
+
+// Cargar nombre del restaurante
+async function loadRestaurantInfo() {
+  if (!slug) return;
+  try {
+    const r = await fetch('/api/auth/info/' + slug);
+    const d = await r.json();
+    if (d.success && d.restaurant_name) {
+      document.getElementById('brand-name').textContent = d.restaurant_name;
+      document.getElementById('brand-sub').textContent = 'Panel de administración';
+      document.title = 'Admin · ' + d.restaurant_name;
+    }
+  } catch(e) {}
+}
+loadRestaurantInfo();
+
+// PIN inputs
+const digits = document.querySelectorAll('.pin-digit');
+const btn = document.getElementById('btn-login');
+const errEl = document.getElementById('error-msg');
+
+digits.forEach((inp, i) => {
+  inp.addEventListener('input', (e) => {
+    const val = e.target.value.replace(/\D/g, '');
+    e.target.value = val.slice(-1);
+    
+    if (val && i < 5) {
+      digits[i + 1].focus();
+    }
+    
+    inp.classList.toggle('filled', !!inp.value);
+    errEl.textContent = '';
+    digits.forEach(d => d.classList.remove('error'));
+    checkComplete();
+  });
+
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !inp.value && i > 0) {
+      digits[i - 1].focus();
+      digits[i - 1].value = '';
+      digits[i - 1].classList.remove('filled');
+    }
+    if (e.key === 'Enter') {
+      doLogin();
+    }
+  });
+
+  inp.addEventListener('focus', () => {
+    inp.select();
+  });
+
+  // Handle paste
+  inp.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const pasted = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+    pasted.split('').forEach((ch, j) => {
+      if (digits[j]) {
+        digits[j].value = ch;
+        digits[j].classList.add('filled');
+      }
+    });
+    if (pasted.length > 0) {
+      digits[Math.min(pasted.length, 5)].focus();
+    }
+    checkComplete();
+  });
+});
+
+// Focus first input on load
+setTimeout(() => digits[0].focus(), 300);
+
+function checkComplete() {
+  const pin = getPin();
+  btn.disabled = pin.length < 6;
+}
+
+function getPin() {
+  return Array.from(digits).map(d => d.value).join('');
+}
+
+async function doLogin() {
+  const pin = getPin();
+  if (pin.length < 6) return;
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Verificando...';
+  errEl.textContent = '';
+
+  try {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, pin })
+    });
+    const d = await r.json();
+
+    if (d.success) {
+      // Guardar token en sessionStorage
+      sessionStorage.setItem('pidoya_token', d.token);
+      sessionStorage.setItem('pidoya_slug', slug);
+      sessionStorage.setItem('pidoya_restaurant', d.restaurant_name);
+      sessionStorage.setItem('pidoya_restaurant_id', d.restaurant_id);
+
+      btn.innerHTML = '<span class="msym">check_circle</span> ¡Bienvenido!';
+      btn.style.background = 'var(--olive)';
+
+      setTimeout(() => {
+        window.location.href = '/admin/dashboard/' + slug;
+      }, 600);
+    } else {
+      showError(d.error || 'PIN incorrecto');
+    }
+  } catch (e) {
+    showError('Error de conexión');
+  }
+}
+
+function showError(msg) {
+  errEl.textContent = msg;
+  digits.forEach(d => {
+    d.classList.add('error');
+    d.value = '';
+    d.classList.remove('filled');
+  });
+  btn.disabled = true;
+  btn.innerHTML = '<span class="msym">lock_open</span> Entrar al panel';
+  setTimeout(() => digits[0].focus(), 450);
+}
+</script>
+</body>
+</html>

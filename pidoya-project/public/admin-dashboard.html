@@ -296,6 +296,27 @@ main{max-width:980px;margin:0 auto;padding-bottom:80px}
 </main>
 
 <script>
+(function(){
+  const token = sessionStorage.getItem('pidoya_token');
+  const slug = sessionStorage.getItem('pidoya_slug');
+  if(!token || !slug){
+    const pathSlug = window.location.pathname.split('/').pop();
+    window.location.href = '/admin/' + (pathSlug || 'lournar');
+    return;
+  }
+  fetch('/api/auth/verify',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({token})
+  }).then(r=>r.json()).then(d=>{
+    if(!d.success){
+      sessionStorage.clear();
+      window.location.href = '/admin/' + slug;
+    }
+  }).catch(()=>{});
+})();
+</script>
+<script>
 const API = '/api';
 const REST = 'lournar-1';
 
